@@ -21,6 +21,16 @@ class BPSimpleTime implements SimpleTime {
     }
 
     @Override
+    public int getHour() {
+        return hour;
+    }
+
+    @Override
+    public int getMinutes() {
+        return minutes;
+    }
+
+    @Override
     public void add(int minutes) {
         if (minutes >= 0) {
             minutes = getRidOfDays(minutes);
@@ -28,6 +38,15 @@ class BPSimpleTime implements SimpleTime {
         } else {
             throw new IllegalArgumentException("Minutes parameter cannot be lower than 0");
         }
+    }
+
+    @Override
+    public int compareTo(SimpleTime other) {
+        int hourComparison = Integer.compare(this.hour, other.getHour());
+        if (hourComparison != 0)
+            return hourComparison;
+        else
+            return Integer.compare(this.minutes, other.getMinutes());
     }
 
     private void validateTime(int hour, int minute) throws BreakPointException {
