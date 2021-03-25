@@ -4,7 +4,7 @@ import com.arch.dayframe.model.bp.BreakPointException.ErrorCode;
 
 import java.util.Calendar;
 
-class BPSimpleTime implements SimpleTime {
+class BPSimpleTime implements    SimpleTime {
 
     private static final String TIME_FORMAT = "%02d:%02d";
 
@@ -46,6 +46,24 @@ class BPSimpleTime implements SimpleTime {
         } else {
             throw new IllegalArgumentException("Minutes parameter cannot be lower than 0");
         }
+    }
+
+    @Override
+    public boolean isNow() {
+        SimpleTime currentTime = new BPSimpleTime();
+        return this.compareTo(currentTime) == 0;
+    }
+
+    @Override
+    public boolean isPast() {
+        SimpleTime currentTime = new BPSimpleTime();
+        return this.compareTo(currentTime) < 0;
+    }
+
+    @Override
+    public boolean isFuture() {
+        SimpleTime currentTime = new BPSimpleTime();
+        return this.compareTo(currentTime) > 0;
     }
 
     @Override

@@ -10,6 +10,12 @@ public interface SimpleTime extends Comparable<SimpleTime>{
 
     void add(int minutes);
 
+    boolean isNow();
+
+    boolean isPast();
+
+    boolean isFuture();
+
     @Override
     int compareTo(SimpleTime other);
 }
