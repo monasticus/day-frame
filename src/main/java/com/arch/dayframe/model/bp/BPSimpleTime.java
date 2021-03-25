@@ -2,12 +2,20 @@ package com.arch.dayframe.model.bp;
 
 import com.arch.dayframe.model.bp.BreakPointException.ErrorCode;
 
+import java.util.Calendar;
+
 class BPSimpleTime implements SimpleTime {
 
     private static final String TIME_FORMAT = "%02d:%02d";
 
     private int hour;
     private int minutes;
+
+    public BPSimpleTime() {
+        Calendar currentTime = Calendar.getInstance();
+        this.hour = currentTime.get(Calendar.HOUR_OF_DAY);
+        this.minutes = currentTime.get(Calendar.MINUTE);
+    }
 
     public BPSimpleTime(int hour, int minutes) throws BreakPointException {
         validateTime(hour, minutes);
