@@ -1,0 +1,35 @@
+9:59
+23:9
+9:9
+ 23:59
+9:59 - test message
+23:9 - test message
+9:9 - test message
+ 23:59 - test message
+aa:bb
+aa:bb - test message
+ 23:59 - test message aA1!
+!!:!!
+!!:!! - test message
+23 59
+23 59 - test message
+23:59-test message
+23:59 -test message
+23:59- test message
+23:59test message
+23:59 test message
+23:59 test - message
+23:59-
+23:59-
+23:59 -
+23:59 -
+23:59 - 1
+23:59 - 12345678901234567890123456789012345
+23:59 - 123456789012345678901234567890123456
+test message - 23:59
+test message-23:59
+test message -23:59
+test message- 23:59
+test message
+ - test message
+test message -
