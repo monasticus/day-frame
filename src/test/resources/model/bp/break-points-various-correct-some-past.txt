@@ -1,0 +1,8 @@
+00:00
+23:56 - test message
+23:57 - test message aA1!
+ 00:01 - test message
+23:58 - test message
+ 00:02 - test message
+23:59 - 1
+00:03 - 12345678901234567890123456789012345

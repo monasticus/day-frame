@@ -6,7 +6,7 @@ public class BreakPointException extends Exception {
     private String errorSource;
 
     public enum ErrorCode {
-        DESCRIPTION_FORMAT_ERR, TIME_FORMAT_ERR,
+        DESCRIPTION_FORMAT_ERR, TIME_FORMAT_ERR, TIME_DUPLICATE_ERR,
         ALREADY_POSTPONED_ERR, ZERO_POSTPONE_ERR, NEGATIVE_POSTPONE_ERR
     }
 
@@ -30,6 +30,8 @@ public class BreakPointException extends Exception {
                 return String.format("Wrong break point description: %s", errorSource);
             case TIME_FORMAT_ERR:
                 return String.format("Wrong break point time: %s", errorSource);
+            case TIME_DUPLICATE_ERR:
+                return String.format("Duplicated break point time: %s", errorSource);
             case ALREADY_POSTPONED_ERR:
                 return "Break point has been already postponed.";
             case ZERO_POSTPONE_ERR:

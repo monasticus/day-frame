@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.arch.dayframe.model.bp.BreakPointException.ErrorCode.DESCRIPTION_FORMAT_ERR;
+import static com.arch.dayframe.model.bp.BreakPointException.ErrorCode.TIME_DUPLICATE_ERR;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("BreakPointFactory")
@@ -19,13 +20,13 @@ class BreakPointFactoryTest {
     private static final String TEST_DATA_DIRECTORY = "src/test/resources/model/bp/";
     private static final String EMPTY_ONE_LINE = TEST_DATA_DIRECTORY + "break-points-empty-one-line.txt";
     private static final String EMPTY_TWO_LINES = TEST_DATA_DIRECTORY + "break-points-empty-two-lines.txt";
-    private static final String EMPTY_LINES_WITH_SPACE = TEST_DATA_DIRECTORY + "break-points-empty-lines-with-space.txt";
     private static final String EMPTY_FIRST_LINE_AND_ONE_CORRECT_DESC = TEST_DATA_DIRECTORY + "break-points-empty-first-line-and-one-correct-desc.txt";
     private static final String EMPTY_FIRST_LINE_AND_ONE_INCORRECT_DESC = TEST_DATA_DIRECTORY + "break-points-empty-first-line-and-one-incorrect-desc.txt";
     private static final String VARIOUS_CORRECT = TEST_DATA_DIRECTORY + "break-points-various-correct.txt";
     private static final String VARIOUS_INCORRECT = TEST_DATA_DIRECTORY + "break-points-various-incorrect.txt";
     private static final String VARIOUS_CORRECT_AND_INCORRECT_COMBINED = TEST_DATA_DIRECTORY + "break-points-various-correct-and-incorrect-combined.txt";
     private static final String VARIOUS_CORRECT_NOT_CHRONOLOGICALLY = TEST_DATA_DIRECTORY + "break-points-various-correct-not-chronologically.txt";
+    private static final String VARIOUS_CORRECT_TIME_DUPLICATED = TEST_DATA_DIRECTORY + "break-points-various-correct-duplicated.txt";
     private static final String COMMENTED_ALL = TEST_DATA_DIRECTORY + "break-points-commented-all.txt";
     private static final String COMMENTED_SOME = TEST_DATA_DIRECTORY + "break-points-commented-some.txt";
 
@@ -33,13 +34,13 @@ class BreakPointFactoryTest {
     private static List<String> incorrectDescriptions;
     private static List<String> mixedDescriptions;
     private static final String COMMENTED_DESCRIPTION = "#23:59 - test-message";
-    private static final String CORRECT_DESCRIPTION_1 = "23:59";
-    private static final String CORRECT_DESCRIPTION_2 = "23:59 - test message";
-    private static final String CORRECT_DESCRIPTION_3 = "23:59 - test message aA1!";
-    private static final String CORRECT_DESCRIPTION_4 = " 23:59 - test message";
-    private static final String CORRECT_DESCRIPTION_5 = "23:59 - test message ";
-    private static final String CORRECT_DESCRIPTION_6 = " 23:59 - test message ";
-    private static final String CORRECT_DESCRIPTION_7 = "23:59 - 1";
+    private static final String CORRECT_DESCRIPTION_1 = "23:52";
+    private static final String CORRECT_DESCRIPTION_2 = "23:53 - test message";
+    private static final String CORRECT_DESCRIPTION_3 = "23:54 - test message aA1!";
+    private static final String CORRECT_DESCRIPTION_4 = " 23:55 - test message";
+    private static final String CORRECT_DESCRIPTION_5 = "23:56 - test message ";
+    private static final String CORRECT_DESCRIPTION_6 = " 23:57 - test message ";
+    private static final String CORRECT_DESCRIPTION_7 = "23:58 - 1";
     private static final String CORRECT_DESCRIPTION_8 = "23:59 - 12345678901234567890123456789012345";
     private static final String INCORRECT_DESCRIPTION_01 = "9:59";
     private static final String INCORRECT_DESCRIPTION_02 = "23:9";
@@ -142,34 +143,41 @@ class BreakPointFactoryTest {
     }
 
     @Test @Order(10)
+    void fromPathVariousCorrectTimeDuplicated() {
+        BreakPointException e = assertThrows(BreakPointException.class, () -> BreakPointFactory.fromPath(VARIOUS_CORRECT_TIME_DUPLICATED));
+        assertEquals(TIME_DUPLICATE_ERR, e.getErrorCode());
+        assertEquals("Duplicated break point time: 23:59", e.getMessage());
+    }
+
+    @Test @Order(11)
     void fromPathCommentedAll() {
         LinkedList<BreakPoint> breakPoints = assertDoesNotThrow(() -> BreakPointFactory.fromPath(COMMENTED_ALL));
         assertEquals(0, breakPoints.size());
     }
 
-    @Test @Order(11)
+    @Test @Order(12)
     void fromPathCommentedSome() {
         LinkedList<BreakPoint> breakPoints = assertDoesNotThrow(() -> BreakPointFactory.fromPath(COMMENTED_SOME));
         assertEquals(5, breakPoints.size());
     }
 
-    @Test @Order(12)
+    @Test @Order(13)
     void fromDescriptionsCorrect() {
         LinkedList<BreakPoint> breakPoints = assertDoesNotThrow(() -> BreakPointFactory.fromDescriptions(correctDescriptions));
         testVariousCorrect(breakPoints);
     }
 
-    @Test @Order(13)
+    @Test @Order(14)
     void fromDescriptionsIncorrect() {
         assertThrows(BreakPointException.class, () -> BreakPointFactory.fromDescriptions(incorrectDescriptions));
     }
 
-    @Test @Order(14)
+    @Test @Order(15)
     void fromDescriptionsMixed() {
         assertThrows(BreakPointException.class, () -> BreakPointFactory.fromDescriptions(mixedDescriptions));
     }
 
-    @Test @Order(15)
+    @Test @Order(16)
     void fromDescriptionCorrectOnes() {
         BreakPoint breakPoint1 = assertDoesNotThrow(() -> BreakPointFactory.fromDescription(CORRECT_DESCRIPTION_1));
         BreakPoint breakPoint2 = assertDoesNotThrow(() -> BreakPointFactory.fromDescription(CORRECT_DESCRIPTION_2));
@@ -180,19 +188,11 @@ class BreakPointFactoryTest {
         BreakPoint breakPoint7 = assertDoesNotThrow(() -> BreakPointFactory.fromDescription(CORRECT_DESCRIPTION_7));
         BreakPoint breakPoint8 = assertDoesNotThrow(() -> BreakPointFactory.fromDescription(CORRECT_DESCRIPTION_8));
 
-        Stream.of(breakPoint1, breakPoint2, breakPoint3, breakPoint4, breakPoint5, breakPoint6, breakPoint7, breakPoint8)
-                .forEach(bp -> assertEquals("23:59", bp.getTimeValue()));
-        assertEquals("", breakPoint1.getMessage());
-        assertEquals("test message", breakPoint2.getMessage());
-        assertEquals("test message aA1!", breakPoint3.getMessage());
-        assertEquals("test message", breakPoint4.getMessage());
-        assertEquals("test message", breakPoint5.getMessage());
-        assertEquals("test message", breakPoint6.getMessage());
-        assertEquals("1", breakPoint7.getMessage());
-        assertEquals("12345678901234567890123456789012345", breakPoint8.getMessage());
+        List<BreakPoint> breakPoints = List.of(breakPoint1, breakPoint2, breakPoint3, breakPoint4, breakPoint5, breakPoint6, breakPoint7, breakPoint8);
+        testVariousCorrect(breakPoints);
     }
 
-    @Test @Order(16)
+    @Test @Order(17)
     void fromDescriptionIncorrectOnesThrow() {
         incorrectDescriptions.forEach(desc -> {
             BreakPointException e = assertThrows(BreakPointException.class, () -> BreakPointFactory.fromDescription(desc));
@@ -201,14 +201,14 @@ class BreakPointFactoryTest {
         });
     }
 
-    @Test @Order(17)
+    @Test @Order(18)
     void fromDescriptionCommented() {
         BreakPointException e = assertThrows(BreakPointException.class, () -> BreakPointFactory.fromDescription(COMMENTED_DESCRIPTION));
         assertEquals(DESCRIPTION_FORMAT_ERR, e.getErrorCode());
         assertEquals("Wrong break point description: " + COMMENTED_DESCRIPTION, e.getMessage());
     }
 
-    @Test @Order(18)
+    @Test @Order(19)
     void fromTimeAndNotEmptyMessage() {
         SimpleTime simpleTime = new BPSimpleTime();
         String message = "test message";
@@ -223,7 +223,7 @@ class BreakPointFactoryTest {
         assertEquals(message, bpMessage);
     }
 
-    @Test @Order(19)
+    @Test @Order(20)
     void fromTimeAndEmptyMessage() {
         SimpleTime simpleTime = new BPSimpleTime();
         String message = "";
@@ -238,7 +238,7 @@ class BreakPointFactoryTest {
         assertEquals(message, bpMessage);
     }
 
-    @Test @Order(20)
+    @Test @Order(21)
     void fromTimeAndNullMessage() {
         SimpleTime simpleTime = new BPSimpleTime();
         String message = null;
@@ -246,7 +246,7 @@ class BreakPointFactoryTest {
         assertThrows(InvalidParameterException.class, () -> BreakPointFactory.fromTimeAndMessage(simpleTime, message));
     }
 
-    @Test @Order(21)
+    @Test @Order(22)
     void fromNullTimeAndNotNullMessage() {
         SimpleTime simpleTime = null;
         String message = "";
@@ -254,7 +254,7 @@ class BreakPointFactoryTest {
         assertThrows(InvalidParameterException.class, () -> BreakPointFactory.fromTimeAndMessage(simpleTime, message));
     }
 
-    @Test @Order(22)
+    @Test @Order(23)
     void fromNullTimeAndMessage() {
         SimpleTime simpleTime = null;
         String message = null;
@@ -290,9 +290,16 @@ class BreakPointFactoryTest {
                 .collect(Collectors.toList());
     }
 
-    private void testVariousCorrect(LinkedList<BreakPoint> breakPoints) {
+    private void testVariousCorrect(List<BreakPoint> breakPoints) {
         assertEquals(8, breakPoints.size());
-        breakPoints.forEach(bp -> assertEquals("23:59", bp.getTimeValue()));
+        assertEquals("23:52", breakPoints.get(0).getTimeValue());
+        assertEquals("23:53", breakPoints.get(1).getTimeValue());
+        assertEquals("23:54", breakPoints.get(2).getTimeValue());
+        assertEquals("23:55", breakPoints.get(3).getTimeValue());
+        assertEquals("23:56", breakPoints.get(4).getTimeValue());
+        assertEquals("23:57", breakPoints.get(5).getTimeValue());
+        assertEquals("23:58", breakPoints.get(6).getTimeValue());
+        assertEquals("23:59", breakPoints.get(7).getTimeValue());
         assertEquals("", breakPoints.get(0).getMessage());
         assertEquals("test message", breakPoints.get(1).getMessage());
         assertEquals("test message aA1!", breakPoints.get(2).getMessage());

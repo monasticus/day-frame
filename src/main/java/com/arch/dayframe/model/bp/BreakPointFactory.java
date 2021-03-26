@@ -34,7 +34,10 @@ public class BreakPointFactory {
         LinkedList<BreakPoint> breakPoints = new LinkedList<>();
         for (String bpDescription : bpDescriptions) {
             BreakPoint breakPoint = fromDescription(bpDescription);
-            breakPoints.add(breakPoint);
+            if (breakPoints.stream().noneMatch(bp -> bp.hasTheSameTime(breakPoint)))
+                breakPoints.add(breakPoint);
+            else
+                throw new BreakPointException(ErrorCode.TIME_DUPLICATE_ERR, breakPoint.getTimeValue());
         }
         Collections.sort(breakPoints);
         return breakPoints;
