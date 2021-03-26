@@ -1,8 +1,6 @@
 package com.arch.dayframe.model.bp;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.security.InvalidParameterException;
 import java.util.Collection;
@@ -15,6 +13,7 @@ import static com.arch.dayframe.model.bp.BreakPointException.ErrorCode.DESCRIPTI
 import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("BreakPointFactory")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class BreakPointFactoryTest {
 
     private static final String TEST_DATA_DIRECTORY = "src/test/resources/model/bp/";
@@ -80,25 +79,25 @@ class BreakPointFactoryTest {
         mixedDescriptions = getMixedDescriptions();
     }
 
-    @Test
+    @Test @Order(1)
     void fromPathEmptyOneLine() {
         LinkedList<BreakPoint> breakPoints = assertDoesNotThrow(() -> BreakPointFactory.fromPath(EMPTY_ONE_LINE));
         assertEquals(0, breakPoints.size());
     }
 
-    @Test
+    @Test @Order(2)
     void fromPathEmptyTwoLines() {
         LinkedList<BreakPoint> breakPoints = assertDoesNotThrow(() -> BreakPointFactory.fromPath(EMPTY_TWO_LINES));
         assertEquals(0, breakPoints.size());
     }
 
-    @Test
+    @Test @Order(3)
     void fromPathEmptyLinesWithSpace() {
         LinkedList<BreakPoint> breakPoints = assertDoesNotThrow(() -> BreakPointFactory.fromPath(EMPTY_TWO_LINES));
         assertEquals(0, breakPoints.size());
     }
 
-    @Test
+    @Test @Order(4)
     void fromPathEmptyFirstLineAndOneCorrectDescription() {
         LinkedList<BreakPoint> breakPoints = assertDoesNotThrow(() -> BreakPointFactory.fromPath(EMPTY_FIRST_LINE_AND_ONE_CORRECT_DESC));
         assertEquals(1, breakPoints.size());
@@ -111,28 +110,28 @@ class BreakPointFactoryTest {
         assertEquals("test message", bpMessage);
     }
 
-    @Test
+    @Test @Order(5)
     void fromPathEmptyFirstLineAndOneIncorrectDescription() {
         assertThrows(BreakPointException.class, () -> BreakPointFactory.fromPath(EMPTY_FIRST_LINE_AND_ONE_INCORRECT_DESC));
     }
 
-    @Test
+    @Test @Order(6)
     void fromPathVariousCorrect() {
         LinkedList<BreakPoint> breakPoints = assertDoesNotThrow(() -> BreakPointFactory.fromPath(VARIOUS_CORRECT));
         testVariousCorrect(breakPoints);
     }
 
-    @Test
+    @Test @Order(7)
     void fromPathVariousIncorrect() {
         assertThrows(BreakPointException.class, () -> BreakPointFactory.fromPath(VARIOUS_INCORRECT));
     }
 
-    @Test
+    @Test @Order(8)
     void fromPathVariousCorrectAndIncorrectCombined() {
         assertThrows(BreakPointException.class, () -> BreakPointFactory.fromPath(VARIOUS_CORRECT_AND_INCORRECT_COMBINED));
     }
 
-    @Test
+    @Test @Order(9)
     void fromPathVariousCorrectNotChronologically() {
         LinkedList<BreakPoint> breakPoints = assertDoesNotThrow(() -> BreakPointFactory.fromPath(VARIOUS_CORRECT_NOT_CHRONOLOGICALLY));
         assertEquals(3, breakPoints.size());
@@ -142,35 +141,35 @@ class BreakPointFactoryTest {
         assertEquals("23:59", breakPoints.get(2).getTimeValue());
     }
 
-    @Test
+    @Test @Order(10)
     void fromPathCommentedAll() {
         LinkedList<BreakPoint> breakPoints = assertDoesNotThrow(() -> BreakPointFactory.fromPath(COMMENTED_ALL));
         assertEquals(0, breakPoints.size());
     }
 
-    @Test
+    @Test @Order(11)
     void fromPathCommentedSome() {
         LinkedList<BreakPoint> breakPoints = assertDoesNotThrow(() -> BreakPointFactory.fromPath(COMMENTED_SOME));
         assertEquals(5, breakPoints.size());
     }
 
-    @Test
+    @Test @Order(12)
     void fromDescriptionsCorrect() {
         LinkedList<BreakPoint> breakPoints = assertDoesNotThrow(() -> BreakPointFactory.fromDescriptions(correctDescriptions));
         testVariousCorrect(breakPoints);
     }
 
-    @Test
+    @Test @Order(13)
     void fromDescriptionsIncorrect() {
         assertThrows(BreakPointException.class, () -> BreakPointFactory.fromDescriptions(incorrectDescriptions));
     }
 
-    @Test
+    @Test @Order(14)
     void fromDescriptionsMixed() {
         assertThrows(BreakPointException.class, () -> BreakPointFactory.fromDescriptions(mixedDescriptions));
     }
 
-    @Test
+    @Test @Order(15)
     void fromDescriptionCorrectOnes() {
         BreakPoint breakPoint1 = assertDoesNotThrow(() -> BreakPointFactory.fromDescription(CORRECT_DESCRIPTION_1));
         BreakPoint breakPoint2 = assertDoesNotThrow(() -> BreakPointFactory.fromDescription(CORRECT_DESCRIPTION_2));
@@ -193,7 +192,7 @@ class BreakPointFactoryTest {
         assertEquals("12345678901234567890123456789012345", breakPoint8.getMessage());
     }
 
-    @Test
+    @Test @Order(16)
     void fromDescriptionIncorrectOnesThrow() {
         incorrectDescriptions.forEach(desc -> {
             BreakPointException e = assertThrows(BreakPointException.class, () -> BreakPointFactory.fromDescription(desc));
@@ -202,14 +201,14 @@ class BreakPointFactoryTest {
         });
     }
 
-    @Test
+    @Test @Order(17)
     void fromDescriptionCommented() {
         BreakPointException e = assertThrows(BreakPointException.class, () -> BreakPointFactory.fromDescription(COMMENTED_DESCRIPTION));
         assertEquals(DESCRIPTION_FORMAT_ERR, e.getErrorCode());
         assertEquals("Wrong break point description: " + COMMENTED_DESCRIPTION, e.getMessage());
     }
 
-    @Test
+    @Test @Order(18)
     void fromTimeAndNotEmptyMessage() {
         SimpleTime simpleTime = new BPSimpleTime();
         String message = "test message";
@@ -224,7 +223,7 @@ class BreakPointFactoryTest {
         assertEquals(message, bpMessage);
     }
 
-    @Test
+    @Test @Order(19)
     void fromTimeAndEmptyMessage() {
         SimpleTime simpleTime = new BPSimpleTime();
         String message = "";
@@ -239,7 +238,7 @@ class BreakPointFactoryTest {
         assertEquals(message, bpMessage);
     }
 
-    @Test
+    @Test @Order(20)
     void fromTimeAndNullMessage() {
         SimpleTime simpleTime = new BPSimpleTime();
         String message = null;
@@ -247,7 +246,7 @@ class BreakPointFactoryTest {
         assertThrows(InvalidParameterException.class, () -> BreakPointFactory.fromTimeAndMessage(simpleTime, message));
     }
 
-    @Test
+    @Test @Order(21)
     void fromNullTimeAndNotNullMessage() {
         SimpleTime simpleTime = null;
         String message = "";
@@ -255,7 +254,7 @@ class BreakPointFactoryTest {
         assertThrows(InvalidParameterException.class, () -> BreakPointFactory.fromTimeAndMessage(simpleTime, message));
     }
 
-    @Test
+    @Test @Order(22)
     void fromNullTimeAndMessage() {
         SimpleTime simpleTime = null;
         String message = null;
