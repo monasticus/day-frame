@@ -82,12 +82,12 @@ class BPSimpleTime implements    SimpleTime {
 
     private void validateHour(int hour) throws BreakPointException {
         if (!isCorrectHour(hour))
-            throw new BreakPointException(ErrorCode.TIME_ERR, String.format("[hour=%d]", hour));
+            throw new BreakPointException(ErrorCode.TIME_FORMAT_ERR, String.format("[hour=%d]", hour));
     }
 
     private void validateMinute(int minute) throws BreakPointException {
         if (!isCorrectMinute(minute))
-            throw new BreakPointException(ErrorCode.TIME_ERR, String.format("[minute=%d]", minute));
+            throw new BreakPointException(ErrorCode.TIME_FORMAT_ERR, String.format("[minute=%d]", minute));
     }
 
     private static boolean isCorrectHour(int hour) {

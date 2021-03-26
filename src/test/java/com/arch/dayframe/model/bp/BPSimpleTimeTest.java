@@ -40,7 +40,7 @@ class BPSimpleTimeTest {
         Executable createSimpleTimeWithNegativeHour = () -> new BPSimpleTime(-1, 30);
 
         BreakPointException e = assertThrows(BreakPointException.class, createSimpleTimeWithNegativeHour);
-        assertEquals(BreakPointException.ErrorCode.TIME_ERR, e.getErrorCode());
+        assertEquals(BreakPointException.ErrorCode.TIME_FORMAT_ERR, e.getErrorCode());
         assertEquals("Wrong break point time: [hour=-1]", e.getMessage());
     }
 
@@ -50,7 +50,7 @@ class BPSimpleTimeTest {
         Executable createSimpleTimeWithNegativeMinute = () -> new BPSimpleTime(9, -1);
 
         BreakPointException e = assertThrows(BreakPointException.class, createSimpleTimeWithNegativeMinute);
-        assertEquals(BreakPointException.ErrorCode.TIME_ERR, e.getErrorCode());
+        assertEquals(BreakPointException.ErrorCode.TIME_FORMAT_ERR, e.getErrorCode());
         assertEquals("Wrong break point time: [minute=-1]", e.getMessage());
     }
 
@@ -60,7 +60,7 @@ class BPSimpleTimeTest {
         Executable createSimpleTimeWithNegativeHour = () -> new BPSimpleTime(-1, -1);
 
         BreakPointException e = assertThrows(BreakPointException.class, createSimpleTimeWithNegativeHour);
-        assertEquals(BreakPointException.ErrorCode.TIME_ERR, e.getErrorCode());
+        assertEquals(BreakPointException.ErrorCode.TIME_FORMAT_ERR, e.getErrorCode());
         assertEquals("Wrong break point time: [hour=-1]", e.getMessage());
     }
 
@@ -70,7 +70,7 @@ class BPSimpleTimeTest {
         Executable createSimpleTimeWithTooHighHour = () -> new BPSimpleTime(24, 0);
 
         BreakPointException e = assertThrows(BreakPointException.class, createSimpleTimeWithTooHighHour);
-        assertEquals(BreakPointException.ErrorCode.TIME_ERR, e.getErrorCode());
+        assertEquals(BreakPointException.ErrorCode.TIME_FORMAT_ERR, e.getErrorCode());
         assertEquals("Wrong break point time: [hour=24]", e.getMessage());
     }
 
@@ -80,7 +80,7 @@ class BPSimpleTimeTest {
         Executable createSimpleTimeWithTooHighMinute = () -> new BPSimpleTime(0, 60);
 
         BreakPointException e = assertThrows(BreakPointException.class, createSimpleTimeWithTooHighMinute);
-        assertEquals(BreakPointException.ErrorCode.TIME_ERR, e.getErrorCode());
+        assertEquals(BreakPointException.ErrorCode.TIME_FORMAT_ERR, e.getErrorCode());
         assertEquals("Wrong break point time: [minute=60]", e.getMessage());
     }
 
@@ -90,7 +90,7 @@ class BPSimpleTimeTest {
         Executable createSimpleTimeWithTooHighMinute = () -> new BPSimpleTime(24, 60);
 
         BreakPointException e = assertThrows(BreakPointException.class, createSimpleTimeWithTooHighMinute);
-        assertEquals(BreakPointException.ErrorCode.TIME_ERR, e.getErrorCode());
+        assertEquals(BreakPointException.ErrorCode.TIME_FORMAT_ERR, e.getErrorCode());
         assertEquals("Wrong break point time: [hour=24]", e.getMessage());
     }
 
