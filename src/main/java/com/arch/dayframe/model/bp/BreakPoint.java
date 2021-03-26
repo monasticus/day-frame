@@ -1,6 +1,8 @@
 package com.arch.dayframe.model.bp;
 
+import java.security.InvalidParameterException;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.arch.dayframe.model.bp.BreakPointException.ErrorCode.*;
 
@@ -15,8 +17,8 @@ public class BreakPoint implements Comparable<BreakPoint>, Cloneable {
     }
 
     protected BreakPoint(SimpleTime time, String message, boolean postponed) {
-        this.time = time;
-        this.message = message;
+        this.time = Optional.ofNullable(time).orElseThrow(InvalidParameterException::new);
+        this.message = Optional.ofNullable(message).orElseThrow(InvalidParameterException::new);
         this.postponed = postponed;
     }
 
@@ -89,5 +91,4 @@ public class BreakPoint implements Comparable<BreakPoint>, Cloneable {
             return new BreakPoint(time, message, postponed);
         }
     }
-
 }

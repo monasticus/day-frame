@@ -2,6 +2,7 @@ package com.arch.dayframe.model.bp;
 
 import org.junit.jupiter.api.*;
 
+import java.security.InvalidParameterException;
 import java.util.Calendar;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,8 +13,6 @@ class BreakPointTest {
 
     private static SimpleTime defaultBPTime;
     private static final String BP_MESSAGE = "It's time for a break";
-    private static final int BP_SECONDS = 30;
-    private static final int BP_MILLIS = 500;
 
     @BeforeEach
     void setUp() throws BreakPointException {
@@ -21,34 +20,62 @@ class BreakPointTest {
     }
 
     @Test @Order(1)
+    void testCreateBreakPoint() {
+        BreakPoint breakPoint = assertDoesNotThrow(() -> new BreakPoint(defaultBPTime, BP_MESSAGE));
+
+        String bpTime = breakPoint.getTimeValue();
+        String bpMessage = breakPoint.getMessage();
+        String expectedTime = defaultBPTime.getTime();
+
+        assertNotNull(breakPoint);
+        assertEquals(expectedTime, bpTime);
+        assertEquals(BP_MESSAGE, bpMessage);
+    }
+
+    @Test @Order(2)
+    void testCreateBreakPointWithNullSimpleTime() {
+        assertThrows(InvalidParameterException.class, () -> new BreakPoint(null, BP_MESSAGE));
+    }
+
+    @Test @Order(3)
+    void testCreateBreakPointWithNullMessage() {
+        assertThrows(InvalidParameterException.class, () -> new BreakPoint(defaultBPTime, null));
+    }
+
+    @Test @Order(4)
+    void testCreateBreakPointWithNullSimpleTimeAndMessage() {
+        assertThrows(InvalidParameterException.class, () -> new BreakPoint(null, null));
+    }
+
+    @Test @Order(5)
     void testStaticGetTimeValue() {
         BreakPoint breakPoint = new BreakPoint(defaultBPTime, BP_MESSAGE);
         String bpTimeValue = BreakPoint.getTimeValue(breakPoint);
         assertEquals("09:30", bpTimeValue);
     }
 
-    @Test @Order(2)
+    @Test @Order(6)
     void testGetTimeValue() {
         BreakPoint breakPoint = new BreakPoint(defaultBPTime, BP_MESSAGE);
         String bpTimeValue = breakPoint.getTimeValue();
         assertEquals("09:30", bpTimeValue);
     }
 
-    @Test @Order(3)
+    @Test @Order(7)
     void testGetMessage() {
         BreakPoint breakPoint = new BreakPoint(defaultBPTime, BP_MESSAGE);
         String bpMessage = breakPoint.getMessage();
         assertEquals("It's time for a break", bpMessage);
     }
 
-    @Test @Order(4)
+    @Test @Order(8)
     void testIsPostponedByDefault() {
         BreakPoint breakPoint = new BreakPoint(defaultBPTime, BP_MESSAGE);
         boolean isPostponed = breakPoint.isPostponed();
         assertFalse(isPostponed);
     }
 
-    @Test @Order(5)
+    @Test @Order(9)
     void testIsPostponed() throws BreakPointException {
         BreakPoint breakPoint = new BreakPoint(defaultBPTime, BP_MESSAGE);
         boolean isPostponedBefore = breakPoint.isPostponed();
@@ -60,7 +87,7 @@ class BreakPointTest {
         assertTrue(isPostponedAfter);
     }
 
-    @Test @Order(6)
+    @Test @Order(10)
     void testPostponeForOneMinute() throws BreakPointException {
         BreakPoint breakPoint = new BreakPoint(defaultBPTime, BP_MESSAGE);
         boolean isPostponedBefore = breakPoint.isPostponed();
@@ -77,7 +104,7 @@ class BreakPointTest {
         assertEquals("09:31", bpTimeValueAfter);
     }
 
-    @Test @Order(7)
+    @Test @Order(11)
     void testPostponeForTwentyThreeHours() throws BreakPointException {
         BreakPoint breakPoint = new BreakPoint(defaultBPTime, BP_MESSAGE);
         boolean isPostponedBefore = breakPoint.isPostponed();
@@ -94,7 +121,7 @@ class BreakPointTest {
         assertEquals("08:30", bpTimeValueAfter);
     }
 
-    @Test @Order(8)
+    @Test @Order(12)
     void testPostponeForZeroMinutes() {
         BreakPoint breakPoint = new BreakPoint(defaultBPTime, BP_MESSAGE);
 
@@ -103,7 +130,7 @@ class BreakPointTest {
         assertEquals("Wrong postponement value: 0", e.getMessage());
     }
 
-    @Test @Order(9)
+    @Test @Order(13)
     void testPostponeForNegativeMinutes() {
         BreakPoint breakPoint = new BreakPoint(defaultBPTime, BP_MESSAGE);
 
@@ -112,7 +139,7 @@ class BreakPointTest {
         assertEquals("Wrong postponement value: -1", e.getMessage());
     }
 
-    @Test @Order(10)
+    @Test @Order(14)
     void testPostponeAfterZeroError() {
         BreakPoint breakPoint = new BreakPoint(defaultBPTime, BP_MESSAGE);
         boolean isPostponedBefore = breakPoint.isPostponed();
@@ -133,7 +160,7 @@ class BreakPointTest {
         assertEquals("09:31", bpTimeValueAfter);
     }
 
-    @Test @Order(11)
+    @Test @Order(15)
     void testPostponeAfterNegativeError() {
         BreakPoint breakPoint = new BreakPoint(defaultBPTime, BP_MESSAGE);
         boolean isPostponedBefore = breakPoint.isPostponed();
@@ -154,7 +181,7 @@ class BreakPointTest {
         assertEquals("09:31", bpTimeValueAfter);
     }
 
-    @Test @Order(12)
+    @Test @Order(16)
     void testPostponeTwoTimesBothPositive() {
         BreakPoint breakPoint = new BreakPoint(defaultBPTime, BP_MESSAGE);
 
@@ -166,7 +193,7 @@ class BreakPointTest {
         assertEquals("Break point has been already postponed.", e.getMessage());
     }
 
-    @Test @Order(13)
+    @Test @Order(17)
     void testPostponeTwoTimesBothNegative() {
         BreakPoint breakPoint = new BreakPoint(defaultBPTime, BP_MESSAGE);
 
@@ -178,7 +205,7 @@ class BreakPointTest {
         assertEquals("Wrong postponement value: -1", e.getMessage());
     }
 
-    @Test @Order(14)
+    @Test @Order(18)
     void testPostponeTwoTimesBothZero() {
         BreakPoint breakPoint = new BreakPoint(defaultBPTime, BP_MESSAGE);
 
@@ -190,7 +217,7 @@ class BreakPointTest {
         assertEquals("Wrong postponement value: 0", e.getMessage());
     }
 
-    @Test @Order(15)
+    @Test @Order(19)
     void testPostponeTwoTimesFirstPositiveSecondNegative() {
         BreakPoint breakPoint = new BreakPoint(defaultBPTime, BP_MESSAGE);
 
@@ -202,7 +229,7 @@ class BreakPointTest {
         assertEquals("Break point has been already postponed.", e.getMessage());
     }
 
-    @Test @Order(16)
+    @Test @Order(20)
     void testPostponeTwoTimesFirstPositiveSecondZero() {
         BreakPoint breakPoint = new BreakPoint(defaultBPTime, BP_MESSAGE);
 
@@ -214,7 +241,7 @@ class BreakPointTest {
         assertEquals("Break point has been already postponed.", e.getMessage());
     }
 
-    @Test @Order(17)
+    @Test @Order(21)
     void testPostponeTwoTimesFirstNegativeSecondPositive() {
         BreakPoint breakPoint = new BreakPoint(defaultBPTime, BP_MESSAGE);
 
@@ -226,7 +253,7 @@ class BreakPointTest {
         assertEquals("Wrong postponement value: -1", e.getMessage());
     }
 
-    @Test @Order(18)
+    @Test @Order(22)
     void testPostponeTwoTimesFirstNegativeSecondZero() {
         BreakPoint breakPoint = new BreakPoint(defaultBPTime, BP_MESSAGE);
 
@@ -238,7 +265,7 @@ class BreakPointTest {
         assertEquals("Wrong postponement value: -1", e.getMessage());
     }
 
-    @Test @Order(19)
+    @Test @Order(23)
     void testPostponeTwoTimesFirstZeroSecondPositive() {
         BreakPoint breakPoint = new BreakPoint(defaultBPTime, BP_MESSAGE);
 
@@ -250,7 +277,7 @@ class BreakPointTest {
         assertEquals("Wrong postponement value: 0", e.getMessage());
     }
 
-    @Test @Order(20)
+    @Test @Order(24)
     void testPostponeTwoTimesFirstZeroSecondNegative() {
         BreakPoint breakPoint = new BreakPoint(defaultBPTime, BP_MESSAGE);
 
@@ -262,7 +289,7 @@ class BreakPointTest {
         assertEquals("Wrong postponement value: 0", e.getMessage());
     }
 
-    @Test @Order(21)
+    @Test @Order(25)
     void testIsNow() throws BreakPointException {
         for (int h = 0; h < 24; h++){
             for(int m = 0; m < 60; m++){
@@ -281,7 +308,7 @@ class BreakPointTest {
         }
     }
 
-    @Test @Order(22)
+    @Test @Order(26)
     void testIsNotPast() throws BreakPointException {
         for (int h = 0; h < 24; h++){
             for(int m = 0; m < 60; m++){
@@ -300,7 +327,7 @@ class BreakPointTest {
         }
     }
 
-    @Test @Order(23)
+    @Test @Order(27)
     void hasTheSameTime() throws BreakPointException {
         for (int h = 0; h < 24; h++){
             for(int m = 0; m < 60; m++){
@@ -319,7 +346,7 @@ class BreakPointTest {
         }
     }
 
-    @Test @Order(24)
+    @Test @Order(28)
     void testEquals() throws BreakPointException {
         BPSimpleTime alternativeBPTime = new BPSimpleTime(defaultBPTime.getHour(), defaultBPTime.getMinutes() + 1);
         String alternativeMessage = "";
@@ -347,7 +374,7 @@ class BreakPointTest {
         assertNotEquals(breakPoint10, breakPoint1); // Different time, message and postponed
     }
 
-    @Test @Order(25)
+    @Test @Order(29)
     void testHashCode() throws BreakPointException {
         BPSimpleTime alternativeBPTime = new BPSimpleTime(defaultBPTime.getHour(), defaultBPTime.getMinutes() + 1);
         String alternativeMessage = "";
@@ -375,7 +402,7 @@ class BreakPointTest {
         assertNotEquals(breakPoint10.hashCode(), breakPoint1.hashCode()); // Different time, message and postponed
     }
 
-    @Test @Order(26)
+    @Test @Order(30)
     void compareTo() throws BreakPointException {
         BPSimpleTime alternativeBPTime1 = new BPSimpleTime(defaultBPTime.getHour(), defaultBPTime.getMinutes() + 1);
         BPSimpleTime alternativeBPTime2 = new BPSimpleTime(defaultBPTime.getHour(), defaultBPTime.getMinutes() + 2);
@@ -402,7 +429,7 @@ class BreakPointTest {
         assertEquals(1, breakPoint4.compareTo(breakPoint3));
     }
 
-    @Test @Order(27)
+    @Test @Order(31)
     void testClone() {
         BreakPoint breakPoint1 = new BreakPoint(defaultBPTime, BP_MESSAGE);
         BreakPoint breakPoint2 = (BreakPoint) breakPoint1.clone();
