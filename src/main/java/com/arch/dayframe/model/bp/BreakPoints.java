@@ -17,4 +17,8 @@ public class BreakPoints {
     public int getSize(){
         return breakPoints.size();
     }
+
+    public List<BreakPoint> getBreakPointsList() {
+        return new LinkedList<>(this.breakPoints);
+    }
 }
