@@ -1,12 +1,14 @@
 package com.arch.dayframe.model.bp;
 
 import com.arch.dayframe.model.bp.BreakPointException.ErrorCode;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.IntFunction;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -134,9 +136,157 @@ public class BreakPointsTest {
         assertEquals(bpListSizeBefore, bpListSizeAfter);
     }
 
+    @Test
+    void testMoveForwardReturnsNotNull() throws BreakPointException {
+        failTestInTimeFrame(new BPSimpleTime(23, 52), new BPSimpleTime(23, 59));
+
+        BreakPoints breakPoints = assertDoesNotThrow(() -> new BreakPoints(VARIOUS_CORRECT));
+        BreakPoint breakPoint = breakPoints.moveForward();
+        BreakPoint firstBreakPoint = breakPoints.getBreakPointsList().get(0);
+
+        assertNotNull(breakPoint);
+        assertSame(firstBreakPoint, breakPoint);
+    }
+
+    @Test
+    void testMoveForwardReturnsDifferent() throws BreakPointException {
+        failTestInTimeFrame(new BPSimpleTime(23, 52), new BPSimpleTime(23, 59));
+
+        BreakPoints breakPoints = assertDoesNotThrow(() -> new BreakPoints(VARIOUS_CORRECT));
+        List<BreakPoint> moveForwardBreakPointsList = getBPListUsingMapper(breakPoints, i -> breakPoints.moveForward());
+        HashSet<BreakPoint> moveForwardBreakPointSet = new HashSet<>(moveForwardBreakPointsList);
+
+        assertEquals(moveForwardBreakPointsList.size(), moveForwardBreakPointSet.size());
+    }
+
+    @Test
+    void testMoveForwardReturnsNull() throws BreakPointException {
+        failTestInTimeFrame(new BPSimpleTime(23, 52), new BPSimpleTime(23, 59));
+
+        BreakPoints breakPoints = assertDoesNotThrow(() -> new BreakPoints(VARIOUS_CORRECT));
+        goToEndOfBreakPoints(breakPoints);
+        BreakPoint breakPoint = assertDoesNotThrow(breakPoints::moveForward);
+
+        assertNull(breakPoint);
+    }
+
+    @Test
+    void testMoveBackReturnsNotNull() throws BreakPointException {
+        failTestInTimeFrame(new BPSimpleTime(23, 52), new BPSimpleTime(23, 59));
+
+        BreakPoints breakPoints = assertDoesNotThrow(() -> new BreakPoints(VARIOUS_CORRECT));
+        breakPoints.moveForward();
+
+        BreakPoint breakPoint = breakPoints.moveBack();
+        BreakPoint firstBreakPoint = breakPoints.getBreakPointsList().get(0);
+
+        assertNotNull(breakPoint);
+        assertSame(firstBreakPoint, breakPoint);
+    }
+
+    @Test
+    void testMoveBackReturnsNull() throws BreakPointException {
+        failTestInTimeFrame(new BPSimpleTime(23, 52), new BPSimpleTime(23, 59));
+
+        BreakPoints breakPoints = assertDoesNotThrow(() -> new BreakPoints(VARIOUS_CORRECT));
+        BreakPoint breakPoint = assertDoesNotThrow(breakPoints::moveBack);
+
+        assertNull(breakPoint);
+    }
+
+    @Test
+    void testGetNextReturnsNotNull() throws BreakPointException {
+        failTestInTimeFrame(new BPSimpleTime(23, 52), new BPSimpleTime(23, 59));
+
+        BreakPoints breakPoints = assertDoesNotThrow(() -> new BreakPoints(VARIOUS_CORRECT));
+        BreakPoint breakPoint = breakPoints.getNext();
+
+        assertNotNull(breakPoint);
+    }
+
+    @Test
+    void testGetNextReturnsNull() throws BreakPointException {
+        failTestInTimeFrame(new BPSimpleTime(23, 52), new BPSimpleTime(23, 59));
+
+        BreakPoints breakPoints = assertDoesNotThrow(() -> new BreakPoints(VARIOUS_CORRECT));
+        goToEndOfBreakPoints(breakPoints);
+
+        BreakPoint breakPoint = assertDoesNotThrow(breakPoints::getNext);
+
+        assertNull(breakPoint);
+    }
+
+    @Test
+    void testGetNextReturnsEqualsNotSame() throws BreakPointException {
+        failTestInTimeFrame(new BPSimpleTime(23, 52), new BPSimpleTime(23, 59));
+
+        BreakPoints breakPoints = assertDoesNotThrow(() -> new BreakPoints(VARIOUS_CORRECT));
+        List<BreakPoint> getNextBreakPointsList = getBPListUsingMapper(breakPoints, i -> breakPoints.getNext());
+        HashSet<BreakPoint> getNextBreakPointSet = new HashSet<>(getNextBreakPointsList);
+
+        assertEquals(1, getNextBreakPointSet.size());
+        compareAllListComponents(getNextBreakPointsList, Assertions::assertNotSame);
+    }
+
+    @Test
+    void testGetPreviousReturnsNotNull() throws BreakPointException {
+        failTestInTimeFrame(new BPSimpleTime(23, 52), new BPSimpleTime(23, 59));
+
+        BreakPoints breakPoints = assertDoesNotThrow(() -> new BreakPoints(VARIOUS_CORRECT));
+        breakPoints.moveForward();
+        BreakPoint breakPoint = breakPoints.getPrevious();
+
+        assertNotNull(breakPoint);
+    }
+
+    @Test
+    void testGetPreviousReturnsNull() throws BreakPointException {
+        failTestInTimeFrame(new BPSimpleTime(23, 52), new BPSimpleTime(23, 59));
+
+        BreakPoints breakPoints = assertDoesNotThrow(() -> new BreakPoints(VARIOUS_CORRECT));
+        BreakPoint breakPoint = assertDoesNotThrow(breakPoints::getPrevious);
+
+        assertNull(breakPoint);
+    }
+
+    @Test
+    void testGetPreviousReturnsEqualsNotSame() throws BreakPointException {
+        failTestInTimeFrame(new BPSimpleTime(23, 52), new BPSimpleTime(23, 59));
+
+        BreakPoints breakPoints = assertDoesNotThrow(() -> new BreakPoints(VARIOUS_CORRECT));
+        breakPoints.moveForward();
+        List<BreakPoint> getPreviousBreakPointsList = getBPListUsingMapper(breakPoints, i -> breakPoints.getPrevious());
+        HashSet<BreakPoint> getPreviousBreakPointSet = new HashSet<>(getPreviousBreakPointsList);
+
+        assertEquals(1, getPreviousBreakPointSet.size());
+        compareAllListComponents(getPreviousBreakPointsList, Assertions::assertNotSame);
+    }
+
     private void failTestInTimeFrame(SimpleTime timeStart, SimpleTime timeEnd) {
         timeEnd.add(1);
         if (!timeStart.isFuture())
             fail("Wait until " + timeEnd.getTime() + " with the test execution");
+    }
+
+    private List<BreakPoint> getBPListUsingMapper(BreakPoints breakPoints, IntFunction<BreakPoint> mapper) {
+        return IntStream.rangeClosed(1, breakPoints.getSize())
+                .mapToObj(mapper)
+                .collect(Collectors.toList());
+    }
+
+    private void goToEndOfBreakPoints(BreakPoints breakPoints) {
+        for (int i = 0; i < breakPoints.getSize(); i++)
+            breakPoints.moveForward();
+    }
+
+    private void compareAllListComponents(List<BreakPoint> breakPointList, BiConsumer<Object, Object> assertion) {
+        for (int i = 0; i < breakPointList.size() - 1; i++) {
+            BreakPoint bpLeftSide = breakPointList.get(i);
+
+            for (int j = i + 1; j < breakPointList.size(); j++) {
+                BreakPoint bpRightSide = breakPointList.get(j);
+                assertion.accept(bpLeftSide, bpRightSide);
+            }
+        }
     }
 }
