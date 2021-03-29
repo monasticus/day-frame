@@ -1,6 +1,6 @@
 package com.arch.dayframe.model.bp;
 
-public interface SimpleTime extends Comparable<SimpleTime>{
+public interface SimpleTime extends Comparable<SimpleTime>, Cloneable {
 
     String getTime();
 
@@ -16,6 +16,11 @@ public interface SimpleTime extends Comparable<SimpleTime>{
 
     boolean isFuture();
 
+    SimpleTime clone();
+
     @Override
-    int compareTo(SimpleTime other);
+    boolean equals(Object o);
+
+    @Override
+    int hashCode();
 }
