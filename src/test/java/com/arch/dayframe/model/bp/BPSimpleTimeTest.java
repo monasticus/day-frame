@@ -324,7 +324,58 @@ class BPSimpleTimeTest {
     }
 
     @Test @Order(27)
-    @DisplayName("27. compareTo() the same hour, the same minutes")
+    @DisplayName("27. clone() - equals, not same")
+    void testCloneEqualsNotSame() throws BreakPointException {
+        SimpleTime simpleTime = new BPSimpleTime(11, 31);
+        SimpleTime simpleTimeClone = simpleTime.clone();
+
+        assertEquals(simpleTime.getTime(), simpleTimeClone.getTime());
+        assertNotSame(simpleTime, simpleTimeClone);
+    }
+
+    @Test @Order(28)
+    @DisplayName("28. clone() - encapsulation test")
+    void testCloneEncapsulationTest() throws BreakPointException {
+        SimpleTime simpleTime = new BPSimpleTime(11, 31);
+        SimpleTime simpleTimeClone = simpleTime.clone();
+        simpleTimeClone.add(1);
+
+        assertEquals("11:31", simpleTime.getTime());
+        assertEquals("11:32", simpleTimeClone.getTime());
+    }
+
+    @Test @Order(29)
+    @DisplayName("29. equals()")
+    void testEquals() throws BreakPointException {
+        SimpleTime simpleTime1 = new BPSimpleTime(11, 31);
+        SimpleTime simpleTime2 = new BPSimpleTime(11, 31);
+        SimpleTime simpleTime3 = new BPSimpleTime(11, 30);
+        SimpleTime simpleTime4 = new BPSimpleTime(12, 31);
+        SimpleTime simpleTime5 = new BPSimpleTime(12, 30);
+
+        assertEquals(simpleTime1, simpleTime2);
+        assertNotEquals(simpleTime1, simpleTime3);
+        assertNotEquals(simpleTime1, simpleTime4);
+        assertNotEquals(simpleTime1, simpleTime5);
+    }
+
+    @Test @Order(30)
+    @DisplayName("30. hashCode()")
+    void testHashCode() throws BreakPointException {
+        SimpleTime simpleTime1 = new BPSimpleTime(11, 31);
+        SimpleTime simpleTime2 = new BPSimpleTime(11, 31);
+        SimpleTime simpleTime3 = new BPSimpleTime(11, 30);
+        SimpleTime simpleTime4 = new BPSimpleTime(12, 31);
+        SimpleTime simpleTime5 = new BPSimpleTime(12, 30);
+
+        assertEquals(simpleTime1.hashCode(), simpleTime2.hashCode());
+        assertNotEquals(simpleTime1.hashCode(), simpleTime3.hashCode());
+        assertNotEquals(simpleTime1.hashCode(), simpleTime4.hashCode());
+        assertNotEquals(simpleTime1.hashCode(), simpleTime5.hashCode());
+    }
+
+    @Test @Order(31)
+    @DisplayName("31. compareTo() the same hour, the same minutes")
     void testCompareTheSameHourTheSameMinutes() throws BreakPointException {
         SimpleTime simpleTime1 = new BPSimpleTime(10, 30);
         SimpleTime simpleTime2 = new BPSimpleTime(10, 30);
@@ -333,8 +384,8 @@ class BPSimpleTimeTest {
         assertEquals(0, compareResult);
     }
 
-    @Test @Order(28)
-    @DisplayName("28. compareTo() the same hour, lower minutes")
+    @Test @Order(32)
+    @DisplayName("32. compareTo() the same hour, lower minutes")
     void testCompareTheSameHourLowerMinutes() throws BreakPointException {
         SimpleTime simpleTime1 = new BPSimpleTime(10, 29);
         SimpleTime simpleTime2 = new BPSimpleTime(10, 30);
@@ -343,8 +394,8 @@ class BPSimpleTimeTest {
         assertEquals(-1, compareResult);
     }
 
-    @Test @Order(29)
-    @DisplayName("29. compareTo() the same hour, higher minutes")
+    @Test @Order(33)
+    @DisplayName("33. compareTo() the same hour, higher minutes")
     void testCompareTheSameHourHigherMinutes() throws BreakPointException {
         SimpleTime simpleTime1 = new BPSimpleTime(10, 31);
         SimpleTime simpleTime2 = new BPSimpleTime(10, 30);
@@ -353,8 +404,8 @@ class BPSimpleTimeTest {
         assertEquals(1, compareResult);
     }
 
-    @Test @Order(30)
-    @DisplayName("30. compareTo() lower hour, the same minutes")
+    @Test @Order(34)
+    @DisplayName("34. compareTo() lower hour, the same minutes")
     void testCompareLowerHourTheSameMinutes() throws BreakPointException {
         SimpleTime simpleTime1 = new BPSimpleTime(9, 30);
         SimpleTime simpleTime2 = new BPSimpleTime(10, 30);
@@ -363,8 +414,8 @@ class BPSimpleTimeTest {
         assertEquals(-1, compareResult);
     }
 
-    @Test @Order(31)
-    @DisplayName("31. compareTo() lower hour, lower minutes")
+    @Test @Order(35)
+    @DisplayName("35. compareTo() lower hour, lower minutes")
     void testCompareLowerHourLowerMinutes() throws BreakPointException {
         SimpleTime simpleTime1 = new BPSimpleTime(9, 29);
         SimpleTime simpleTime2 = new BPSimpleTime(10, 30);
@@ -373,8 +424,8 @@ class BPSimpleTimeTest {
         assertEquals(-1, compareResult);
     }
 
-    @Test @Order(32)
-    @DisplayName("32. compareTo() lower hour, higher minutes")
+    @Test @Order(36)
+    @DisplayName("36. compareTo() lower hour, higher minutes")
     void testCompareLowerHourHigherMinutes() throws BreakPointException {
         SimpleTime simpleTime1 = new BPSimpleTime(9, 31);
         SimpleTime simpleTime2 = new BPSimpleTime(10, 30);
@@ -383,8 +434,8 @@ class BPSimpleTimeTest {
         assertEquals(-1, compareResult);
     }
 
-    @Test @Order(33)
-    @DisplayName("33. compareTo() higher hour, the same minutes")
+    @Test @Order(37)
+    @DisplayName("37. compareTo() higher hour, the same minutes")
     void testCompareHigherHourTheSameMinutes() throws BreakPointException {
         SimpleTime simpleTime1 = new BPSimpleTime(11, 30);
         SimpleTime simpleTime2 = new BPSimpleTime(10, 30);
@@ -393,8 +444,8 @@ class BPSimpleTimeTest {
         assertEquals(1, compareResult);
     }
 
-    @Test @Order(34)
-    @DisplayName("34. compareTo() higher hour, lower minutes")
+    @Test @Order(38)
+    @DisplayName("38. compareTo() higher hour, lower minutes")
     void testCompareHigherHourLowerMinutes() throws BreakPointException {
         SimpleTime simpleTime1 = new BPSimpleTime(11, 29);
         SimpleTime simpleTime2 = new BPSimpleTime(10, 30);
@@ -403,8 +454,8 @@ class BPSimpleTimeTest {
         assertEquals(1, compareResult);
     }
 
-    @Test @Order(35)
-    @DisplayName("35. compareTo() higher hour, higher minutes")
+    @Test @Order(39)
+    @DisplayName("39. compareTo() higher hour, higher minutes")
     void testCompareHigherHourHigherMinutes() throws BreakPointException {
         SimpleTime simpleTime1 = new BPSimpleTime(11, 31);
         SimpleTime simpleTime2 = new BPSimpleTime(10, 30);

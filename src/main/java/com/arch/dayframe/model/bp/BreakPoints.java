@@ -10,11 +10,11 @@ import java.util.stream.Collectors;
 public class BreakPoints {
 
     private final List<BreakPoint> breakPoints;
-    private ListIterator<BreakPoint> bpIterator;
+    private ListIterator<BreakPoint> iterator;
 
     public BreakPoints(String path) throws BreakPointException, IOException {
-        this.breakPoints = BreakPointFactory.fromPath(path).stream().filter(BreakPoint::isNotPast).collect(Collectors.toList());
-        this.bpIterator = this.breakPoints.listIterator();
+        breakPoints = BreakPointFactory.fromPath(path).stream().filter(BreakPoint::isNotPast).collect(Collectors.toList());
+        iterator = breakPoints.listIterator();
     }
 
     public int getSize() {
@@ -22,30 +22,58 @@ public class BreakPoints {
     }
 
     public List<BreakPoint> getBreakPointsList() {
-        return new LinkedList<>(this.breakPoints);
+        return breakPoints.stream().map(BreakPoint::clone).sorted().collect(Collectors.toCollection(LinkedList::new));
     }
 
     public BreakPoint moveForward() {
-        return bpIterator.hasNext() ? bpIterator.next() : null;
+        return iterator.hasNext() ? iterator.next() : null;
     }
 
-    public BreakPoint moveBack() {
-        return bpIterator.hasPrevious() ? bpIterator.previous() : null;
+    public BreakPoint moveBackward() {
+        return iterator.hasPrevious() ? iterator.previous() : null;
     }
 
     public BreakPoint getNext() {
-        return bpIterator.hasNext() ? (BreakPoint) breakPoints.get(bpIterator.nextIndex()).clone() : null;
+        return iterator.hasNext() ? breakPoints.get(iterator.nextIndex()).clone() : null;
     }
 
     public BreakPoint getPrevious() {
-        return bpIterator.hasPrevious() ? (BreakPoint) breakPoints.get(bpIterator.previousIndex()).clone() : null;
+        return iterator.hasPrevious() ? breakPoints.get(iterator.previousIndex()).clone() : null;
     }
 
     public List<BreakPoint> getFutureWithoutNext() {
-        return doesNotHaveNextOrNextIsLast() ? new LinkedList<>() : getBreakPointsList().subList(bpIterator.nextIndex()+1, getSize());
+        return doesNotHaveNextOrNextIsLast() ? new LinkedList<>() : getBreakPointsList().subList(iterator.nextIndex() + 1, getSize());
+    }
+
+    public void postponeRecent(int postponementMinutes) throws BreakPointException {
+        BreakPoint breakPoint = getPrevious();
+        if (breakPoint != null) {
+            BreakPoint originBreakPoint = breakPoints.stream().filter(breakPoint::equals).findFirst().get();
+            originBreakPoint.postpone(postponementMinutes);
+            removeDuplicateOf(originBreakPoint);
+
+            refresh();
+        }
     }
 
     private boolean doesNotHaveNextOrNextIsLast() {
-        return !bpIterator.hasNext() || bpIterator.nextIndex() == getSize()-1;
+        return !iterator.hasNext() || iterator.nextIndex() == getSize()-1;
+    }
+
+    private void removeDuplicateOf(BreakPoint breakPoint) {
+        breakPoints.stream().filter(bp -> bp.hasTheSameTime(breakPoint) && bp != breakPoint)
+                .findAny().map(breakPoints::remove);
+    }
+
+    private void refresh() {
+        Collections.sort(breakPoints);
+        iterator = breakPoints.listIterator();
+        while (iterator.hasNext()) {
+            BreakPoint nextBreakPoint = getNext();
+            if (nextBreakPoint.isNotPast())
+                break;
+            else
+                moveForward();
+        }
     }
 }

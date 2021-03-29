@@ -432,7 +432,7 @@ class BreakPointTest {
     @Test @Order(31)
     void testClone() {
         BreakPoint breakPoint1 = new BreakPoint(defaultBPTime, BP_MESSAGE);
-        BreakPoint breakPoint2 = (BreakPoint) breakPoint1.clone();
+        BreakPoint breakPoint2 = breakPoint1.clone();
 
         String bpTimeValue = breakPoint1.getTimeValue();
         String cloneTimeValue = breakPoint2.getTimeValue();
@@ -446,5 +446,23 @@ class BreakPointTest {
         assertEquals(bpTimeValue, cloneTimeValue);
         assertEquals(bpMessage, cloneMessage);
         assertEquals(bpPostponed, clonePostponed);
+    }
+
+    @Test @Order(32)
+    void testCloneDeepEncapsulation() {
+        BreakPoint breakPoint1 = new BreakPoint(defaultBPTime, BP_MESSAGE);
+        BreakPoint breakPoint2 = breakPoint1.clone();
+
+        assertDoesNotThrow(() -> breakPoint2.postpone(1));
+
+        String bpTimeValue = breakPoint1.getTimeValue();
+        String cloneTimeValue = breakPoint2.getTimeValue();
+        boolean bpPostponed = breakPoint1.isPostponed();
+        boolean clonePostponed = breakPoint2.isPostponed();
+
+        assertNotSame(breakPoint1, breakPoint2);
+        assertNotEquals(breakPoint1, breakPoint2);
+        assertNotEquals(bpTimeValue, cloneTimeValue);
+        assertNotEquals(bpPostponed, clonePostponed);
     }
 }

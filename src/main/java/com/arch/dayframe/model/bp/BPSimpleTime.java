@@ -3,8 +3,9 @@ package com.arch.dayframe.model.bp;
 import com.arch.dayframe.model.bp.BreakPointException.ErrorCode;
 
 import java.util.Calendar;
+import java.util.Objects;
 
-class BPSimpleTime implements    SimpleTime {
+class BPSimpleTime implements SimpleTime {
 
     private static final String TIME_FORMAT = "%02d:%02d";
 
@@ -64,6 +65,34 @@ class BPSimpleTime implements    SimpleTime {
     public boolean isFuture() {
         SimpleTime currentTime = new BPSimpleTime();
         return this.compareTo(currentTime) > 0;
+    }
+
+    @Override
+    public SimpleTime clone() {
+        BPSimpleTime clone = null;
+        try {
+            clone = (BPSimpleTime) super.clone();
+        } catch (CloneNotSupportedException e) {
+            try {
+                clone = new BPSimpleTime(hour, minutes);
+            } catch (BreakPointException ignore) {
+            }
+        }
+
+        return clone;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SimpleTime that = (SimpleTime) o;
+        return hour == that.getHour() && minutes == that.getMinutes();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(hour, minutes);
     }
 
     @Override

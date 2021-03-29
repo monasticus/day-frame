@@ -84,11 +84,7 @@ public class BreakPoint implements Comparable<BreakPoint>, Cloneable {
     }
 
     @Override
-    public Object clone() {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException e) {
-            return new BreakPoint(time, message, postponed);
-        }
+    public BreakPoint clone() {
+        return new BreakPoint(time.clone(), message, postponed);
     }
 }
