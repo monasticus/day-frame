@@ -9,6 +9,7 @@ import java.util.function.BiConsumer;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,6 +22,10 @@ public class BreakPointsTest {
     private static final String VARIOUS_CORRECT_AND_INCORRECT_COMBINED = TEST_DATA_DIRECTORY + "break-points-various-correct-and-incorrect-combined.txt";
     private static final String VARIOUS_CORRECT_TIME_DUPLICATED = TEST_DATA_DIRECTORY + "break-points-various-correct-duplicated.txt";
     private static final String VARIOUS_CORRECT_SOME_PAST = TEST_DATA_DIRECTORY + "break-points-various-correct-some-past.txt";
+    private static final String FUTURE_WITHOUT_NEXT_1 = TEST_DATA_DIRECTORY + "break-points-future-without-next-1.txt";
+    private static final String FUTURE_WITHOUT_NEXT_2 = TEST_DATA_DIRECTORY + "break-points-future-without-next-2.txt";
+    private static final String FUTURE_WITHOUT_NEXT_3 = TEST_DATA_DIRECTORY + "break-points-future-without-next-3.txt";
+    private static final String FUTURE_WITHOUT_NEXT_4 = TEST_DATA_DIRECTORY + "break-points-future-without-next-4.txt";
 
 
     @Test
@@ -262,6 +267,36 @@ public class BreakPointsTest {
         compareAllListComponents(getPreviousBreakPointsList, Assertions::assertNotSame);
     }
 
+    @Test
+    void getFutureWithoutNextEmpty() {
+        BreakPoints breakPoints = assertDoesNotThrow(() -> new BreakPoints(FUTURE_WITHOUT_NEXT_1));
+        testGetFutureWithoutNext(breakPoints);
+    }
+
+    @Test
+    void getFutureWithoutNextNextIsLast() throws BreakPointException {
+        failTestInTimeFrame(new BPSimpleTime(23, 59), new BPSimpleTime(23, 59));
+
+        BreakPoints breakPoints = assertDoesNotThrow(() -> new BreakPoints(FUTURE_WITHOUT_NEXT_2));
+        testGetFutureWithoutNext(breakPoints);
+    }
+
+    @Test
+    void getFutureWithoutNextOneRemains() throws BreakPointException {
+        failTestInTimeFrame(new BPSimpleTime(23, 58), new BPSimpleTime(23, 59));
+
+        BreakPoints breakPoints = assertDoesNotThrow(() -> new BreakPoints(FUTURE_WITHOUT_NEXT_3));
+        testGetFutureWithoutNext(breakPoints);
+    }
+
+    @Test
+    void getFutureWithoutNextTwoRemain() throws BreakPointException {
+        failTestInTimeFrame(new BPSimpleTime(23, 57), new BPSimpleTime(23, 59));
+
+        BreakPoints breakPoints = assertDoesNotThrow(() -> new BreakPoints(FUTURE_WITHOUT_NEXT_4));
+        testGetFutureWithoutNext(breakPoints);
+    }
+
     private void failTestInTimeFrame(SimpleTime timeStart, SimpleTime timeEnd) {
         timeEnd.add(1);
         if (!timeStart.isFuture())
@@ -288,5 +323,17 @@ public class BreakPointsTest {
                 assertion.accept(bpLeftSide, bpRightSide);
             }
         }
+    }
+
+    private void testGetFutureWithoutNext(BreakPoints breakPoints){
+        List<BreakPoint> futureWithoutNext = breakPoints.getFutureWithoutNext();
+        int allSize = breakPoints.getSize();
+        int futureWithoutNextSize = futureWithoutNext.size();
+        boolean isSubList = breakPoints.getBreakPointsList().containsAll(futureWithoutNext);
+
+        int expectedFutureSize = allSize == 0 ? allSize : allSize-1;
+
+        assertEquals(expectedFutureSize, futureWithoutNextSize);
+        assertTrue(isSubList);
     }
 }
