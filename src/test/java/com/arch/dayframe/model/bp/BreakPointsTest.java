@@ -497,9 +497,9 @@ public class BreakPointsTest {
     }
 
     @Test @Order(34)
-    @DisplayName("34. postponeRecent() - postponement does not affect on iterating methods [moveForward(), moveBackward()]")
-    void testPostponeRefreshedIterator() throws BreakPointException {
-        failTestInTimeFrame(new BPSimpleTime(23, 50), new BPSimpleTime(23, 53));
+    @DisplayName("34. postponeRecent() - postponement does not affect on iterating methods [moveForward(), moveBackward()] - no past break points")
+    void testPostponeRefreshedIteratorNoPastBreakPoints() throws BreakPointException {
+        failTestInTimeFrame(new BPSimpleTime(23, 50), new BPSimpleTime(23, 59));
 
         BreakPoints breakPoints = assertDoesNotThrow(() -> new BreakPoints(POSTPONE_RECENT_3));
         breakPoints.moveForward();
@@ -507,6 +507,24 @@ public class BreakPointsTest {
         BreakPoint nextBreakPointAfterPostponement = breakPoints.moveForward();
 
         assertEquals("23:51", nextBreakPointAfterPostponement.getTimeValue());
+    }
+
+    @Test @Order(35)
+    @DisplayName("35. postponeRecent() - postponement does not affect on iterating methods [moveForward(), moveBackward()] - some past break points")
+    void testPostponeRefreshedIteratorSomePastBreakPoints() throws BreakPointException {
+        failTestInTimeFrame(new BPSimpleTime(23, 50), new BPSimpleTime(23, 59));
+
+        BreakPoints breakPoints = assertDoesNotThrow(() -> new BreakPoints(POSTPONE_RECENT_3));
+        breakPoints.moveForward();
+        breakPoints.moveForward();
+        breakPoints.moveForward();
+        breakPoints.moveForward();
+        breakPoints.postponeRecent(2);
+        BreakPoint previousBreakPointAfterPostponement = breakPoints.getPrevious();
+        BreakPoint nextBreakPointAfterPostponement = breakPoints.moveForward();
+
+        assertEquals("00:01", previousBreakPointAfterPostponement.getTimeValue());
+        assertEquals("23:50", nextBreakPointAfterPostponement.getTimeValue());
     }
 
     private static List<BreakPoint> getAllFutureBreakPoints() throws BreakPointException {

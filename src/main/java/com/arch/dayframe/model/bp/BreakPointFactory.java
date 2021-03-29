@@ -81,13 +81,9 @@ public class BreakPointFactory {
     }
 
     private static SimpleTime fetchSimpleTimeFromHourAndMinutes(String hour, String minutes) throws BreakPointException {
-        try {
-            int intHour = Integer.parseInt(hour);
-            int intMinutes = Integer.parseInt(minutes);
-            return new BPSimpleTime(intHour, intMinutes);
-        } catch (NumberFormatException e) {
-            throw new BreakPointException(ErrorCode.TIME_FORMAT_ERR, String.format("%s:%s", hour, minutes));
-        }
+        int intHour = Integer.parseInt(hour);
+        int intMinutes = Integer.parseInt(minutes);
+        return new BPSimpleTime(intHour, intMinutes);
     }
 
     private static String fetchMessageFromMatcher(Matcher matcher) {

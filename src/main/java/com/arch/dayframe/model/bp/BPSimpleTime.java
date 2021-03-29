@@ -69,17 +69,7 @@ class BPSimpleTime implements SimpleTime {
 
     @Override
     public SimpleTime clone() {
-        BPSimpleTime clone = null;
-        try {
-            clone = (BPSimpleTime) super.clone();
-        } catch (CloneNotSupportedException e) {
-            try {
-                clone = new BPSimpleTime(hour, minutes);
-            } catch (BreakPointException ignore) {
-            }
-        }
-
-        return clone;
+        return new BPSimpleTime(hour, minutes);
     }
 
     @Override
@@ -128,7 +118,7 @@ class BPSimpleTime implements SimpleTime {
     }
 
     private int getRidOfDays(int minutes) {
-        return minutes % (24*60);
+        return minutes % (24 * 60);
     }
 
     private void changeTimeByMinutes(int minutes) {

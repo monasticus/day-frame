@@ -2,6 +2,7 @@ package com.arch.dayframe.model.bp;
 
 import org.junit.jupiter.api.*;
 
+import java.io.FileNotFoundException;
 import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -18,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class BreakPointFactoryTest {
 
     private static final String TEST_DATA_DIRECTORY = "src/test/resources/model/bp/";
+    private static final String NONEXISTENT_BREAK_POINTS_LINE = TEST_DATA_DIRECTORY + "nonexistent-break-points.txt";
     private static final String EMPTY_ONE_LINE = TEST_DATA_DIRECTORY + "break-points-empty-one-line.txt";
     private static final String EMPTY_TWO_LINES = TEST_DATA_DIRECTORY + "break-points-empty-two-lines.txt";
     private static final String EMPTY_FIRST_LINE_AND_ONE_CORRECT_DESC = TEST_DATA_DIRECTORY + "break-points-empty-first-line-and-one-correct-desc.txt";
@@ -78,6 +80,12 @@ class BreakPointFactoryTest {
         correctDescriptions = getCorrectDescriptions();
         incorrectDescriptions = getIncorrectDescriptions();
         mixedDescriptions = getMixedDescriptions();
+    }
+
+    @Test @Order(1)
+    void fromPathNonexistent() {
+        FileNotFoundException e = assertThrows(FileNotFoundException.class, () -> BreakPointFactory.fromPath(NONEXISTENT_BREAK_POINTS_LINE));
+        assertEquals("Specified path doesn't match any file.", e.getMessage());
     }
 
     @Test @Order(1)

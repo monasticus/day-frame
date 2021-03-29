@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.MethodOrderer.*;
 class SplashMessageFactoryTest {
 
     private static final String TEST_DATA_DIRECTORY = "src/test/resources/model/splash/";
-    private static final String NONEXISTENT_SPLASH_MESSAGE_PATH = TEST_DATA_DIRECTORY + "not-existing-splash-message.txt";
+    private static final String NONEXISTENT_SPLASH_MESSAGE_PATH = TEST_DATA_DIRECTORY + "nonexistent-splash-message.txt";
     private static final String EMPTY_SPLASH_MESSAGE_1_PATH = TEST_DATA_DIRECTORY + "splash-message-empty-single-line.txt";
     private static final String EMPTY_SPLASH_MESSAGE_2_PATH = TEST_DATA_DIRECTORY + "splash-message-empty-two-lines.txt";
     private static final String EMPTY_SPLASH_MESSAGE_3_PATH = TEST_DATA_DIRECTORY + "splash-message-empty-lines-with-space.txt";

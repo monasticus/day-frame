@@ -21,17 +21,14 @@ public class SplashMessageFactory {
         return Files.exists(sourcePath) ? getSplashMessageFromLines(Files.readAllLines(sourcePath)) : new SplashMessageDTO();
     }
 
-    private static SplashMessageDTO getSplashMessageFromLines(List<String> contentLines) {
-        if (contentLines.size() == 0)
-            return new SplashMessageDTO();
-        else {
-            String firstLine = contentLines.get(0);
-            String title = getTitle(firstLine);
+    private static SplashMessageDTO getSplashMessageFromLines(List<String> splashLines) {
+        String titleLine = splashLines.get(0);
+        String title = getTitle(titleLine);
 
-            contentLines = title.isEmpty() ? contentLines : contentLines.subList(1, contentLines.size());
-            String content = getContent(contentLines);
-            return new SplashMessageDTO(title, content);
-        }
+        List<String> contentLines = title.isEmpty() ? splashLines : splashLines.subList(1, splashLines.size());
+        String content = getContent(contentLines);
+
+        return new SplashMessageDTO(title, content);
     }
 
     private static String getTitle(String firstLine) {

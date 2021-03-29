@@ -1,6 +1,6 @@
 package com.arch.dayframe.model.bp;
 
-public class BreakPointException extends Exception {
+public class BreakPointException extends RuntimeException {
 
     private ErrorCode errorCode;
     private String errorSource;
