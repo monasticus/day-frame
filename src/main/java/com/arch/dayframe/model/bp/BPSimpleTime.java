@@ -106,7 +106,7 @@ class BPSimpleTime implements SimpleTime {
 
     private void validateMinute(int minute) throws BreakPointException {
         if (!isCorrectMinute(minute))
-            throw new BreakPointException(ErrorCode.TIME_FORMAT_ERR, String.format("[minute=%d]", minute));
+            throw new BreakPointException(ErrorCode.TIME_FORMAT_ERR, String.format("[minutes=%d]", minute));
     }
 
     private static boolean isCorrectHour(int hour) {

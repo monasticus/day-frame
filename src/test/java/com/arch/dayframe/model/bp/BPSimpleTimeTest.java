@@ -51,7 +51,7 @@ class BPSimpleTimeTest {
 
         BreakPointException e = assertThrows(BreakPointException.class, createSimpleTimeWithNegativeMinute);
         assertEquals(BreakPointException.ErrorCode.TIME_FORMAT_ERR, e.getErrorCode());
-        assertEquals("Wrong break point time: [minute=-1]", e.getMessage());
+        assertEquals("Wrong break point time: [minutes=-1]", e.getMessage());
     }
 
     @Test @Order(5)
@@ -81,7 +81,7 @@ class BPSimpleTimeTest {
 
         BreakPointException e = assertThrows(BreakPointException.class, createSimpleTimeWithTooHighMinute);
         assertEquals(BreakPointException.ErrorCode.TIME_FORMAT_ERR, e.getErrorCode());
-        assertEquals("Wrong break point time: [minute=60]", e.getMessage());
+        assertEquals("Wrong break point time: [minutes=60]", e.getMessage());
     }
 
     @Test @Order(8)

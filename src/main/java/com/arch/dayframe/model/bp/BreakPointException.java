@@ -1,5 +1,8 @@
 package com.arch.dayframe.model.bp;
 
+import java.security.InvalidParameterException;
+import java.util.Optional;
+
 public class BreakPointException extends RuntimeException {
 
     private ErrorCode errorCode;
@@ -10,17 +13,13 @@ public class BreakPointException extends RuntimeException {
         ALREADY_POSTPONED_ERR, ZERO_POSTPONE_ERR, NEGATIVE_POSTPONE_ERR
     }
 
-    public BreakPointException(String message) {
-        super(message);
-    }
-
     public BreakPointException(ErrorCode errorCode) {
-        this(errorCode, "");
+        this(errorCode, "[NO-SOURCE]");
     }
 
     public BreakPointException(ErrorCode errorCode, String errorSource) {
-        this.errorCode = errorCode;
-        this.errorSource = errorSource;
+        this.errorCode = Optional.ofNullable(errorCode).orElseThrow(InvalidParameterException::new);
+        this.errorSource = Optional.ofNullable(errorSource).orElseThrow(InvalidParameterException::new);
     }
 
     @Override
@@ -38,9 +37,8 @@ public class BreakPointException extends RuntimeException {
                 return "Wrong postponement value: 0";
             case NEGATIVE_POSTPONE_ERR:
                 return String.format("Wrong postponement value: %s", errorSource);
-            default:
-                return super.getMessage();
         }
+        return "";
     }
 
     public ErrorCode getErrorCode(){
