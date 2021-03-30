@@ -157,7 +157,7 @@ class TimePanelTest {
 
     private List<JLabel> getSideLabels() {
         List<JLabel> labels = getLabels();
-        return List.of(labels.get(0), labels.get(1));
+        return List.of(labels.get(0), labels.get(2));
     }
 
     private List<JLabel> getLabels() {
