@@ -38,7 +38,7 @@ public class BreakPoint implements Comparable<BreakPoint>, Cloneable {
         return postponed;
     }
 
-    protected void postpone(int postponementMinutes) throws BreakPointException {
+    public void postpone(int postponementMinutes) throws BreakPointException {
         if (!postponed && postponementMinutes > 0) {
             time.add(postponementMinutes);
             postponed = true;

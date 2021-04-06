@@ -4,6 +4,7 @@ import com.arch.dayframe.model.bp.BreakPoint;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Optional;
 
 public class TimePanel extends JPanel {
 
@@ -21,7 +22,7 @@ public class TimePanel extends JPanel {
     }
 
     public void setCenterLabelValue(String value) {
-        centerLabel.setText(value);
+        centerLabel.setText(Optional.ofNullable(value).orElse(""));
     }
 
     public void setRightLabelValue(BreakPoint breakPoint) {
