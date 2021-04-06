@@ -2,8 +2,7 @@ package com.arch.dayframe.gui.panel;
 
 import com.arch.dayframe.model.bp.BreakPoint;
 import com.arch.dayframe.model.bp.BreakPointFactory;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -14,6 +13,8 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("TimePanel")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class TimePanelTest {
 
     private static TimePanel defaultTimePanel;
@@ -23,34 +24,39 @@ class TimePanelTest {
         defaultTimePanel = new TimePanel();
     }
 
-    @Test
+    @Test @Order(1)
+    @DisplayName("01. Default Background Test")
     void testDefaultBackground() {
         Color bgColor = defaultTimePanel.getBackground();
         assertEquals(Color.WHITE, bgColor);
     }
 
-    @Test
+    @Test @Order(2)
+    @DisplayName("02. Default Layout Test")
     void testDefaultLayout() {
         GridLayout layout = assertDoesNotThrow(() -> (GridLayout) defaultTimePanel.getLayout());
         assertEquals(1, layout.getRows());
         assertEquals(3, layout.getColumns());
     }
 
-    @Test
+    @Test @Order(3)
+    @DisplayName("03. Default Preferred Size Test")
     void testDefaultPreferredSize() {
         Dimension preferredSize = defaultTimePanel.getPreferredSize();
         assertEquals(0, preferredSize.width);
         assertEquals(65, preferredSize.height);
     }
 
-    @Test
+    @Test @Order(4)
+    @DisplayName("04. Component's General Configuration Test")
     void testComponentsGeneralConfiguration() {
         List<JLabel> labels = assertDoesNotThrow(() -> Arrays.stream(defaultTimePanel.getComponents()).map(c -> (JLabel) c).collect(Collectors.toList()));
         labels.forEach(c -> assertEquals(SwingConstants.CENTER, c.getAlignmentX()));
         assertEquals(3, defaultTimePanel.getComponentCount());
     }
 
-    @Test
+    @Test @Order(5)
+    @DisplayName("05. Center Label's Font Test")
     void testCenterLabelFont() {
         JLabel centerLabel = getCenterLabel();
         Font centerLabelFont = centerLabel.getFont();
@@ -60,7 +66,8 @@ class TimePanelTest {
         assertEquals(22, centerLabelFont.getSize());
     }
 
-    @Test
+    @Test @Order(6)
+    @DisplayName("06. Center Label's Border Test")
     void testCenterLabelBorder() {
         JLabel centerLabel = getCenterLabel();
         MatteBorder centerLabelBorder = assertDoesNotThrow(() -> (MatteBorder) centerLabel.getBorder());
@@ -74,7 +81,8 @@ class TimePanelTest {
         assertEquals(1, borderInsets.right);
     }
 
-    @Test
+    @Test @Order(7)
+    @DisplayName("07. Side Labels Font Test")
     void testSideLabelsFont() {
         List<JLabel> sideLabels = getSideLabels();
         sideLabels.forEach(sideLabel -> {
@@ -85,7 +93,8 @@ class TimePanelTest {
         });
     }
 
-    @Test
+    @Test @Order(8)
+    @DisplayName("08. Side Labels Border Test")
     void testSideLabelsBorder() {
         List<JLabel> sideLabels = getSideLabels();
         sideLabels.forEach(sideLabel -> {
@@ -101,54 +110,49 @@ class TimePanelTest {
         });
     }
 
-    @Test
+    @Test @Order(9)
+    @DisplayName("09. Default Label's Values Test")
     void testDefaultLabelValues() {
         List<JLabel> labels = getLabels();
         labels.forEach(label -> assertEquals("", label.getText()));
     }
 
-    @Test
-    void setCenterLabelValue() {
+    @Test @Order(10)
+    @DisplayName("10. test setCenterLabelValue()")
+    void testSetCenterLabelValue() {
         TimePanel timePanel = new TimePanel();
         JLabel centerLabel = (JLabel) timePanel.getComponents()[1];
-        String centerLabelTextBefore = centerLabel.getText();
 
         timePanel.setCenterLabelValue("12:23:05.0");
+        String labelText = centerLabel.getText();
 
-        String centerLabelTextAfter = centerLabel.getText();
-
-        assertEquals("", centerLabelTextBefore);
-        assertEquals("12:23:05.0", centerLabelTextAfter);
+        assertEquals("12:23:05.0", labelText);
     }
 
-    @Test
-    void setLeftLabelValue() {
+    @Test @Order(11)
+    @DisplayName("11. test setLeftLabelValue()")
+    void testSetLeftLabelValue() {
+        BreakPoint breakPoint = BreakPointFactory.fromDescription("23:58 - message");
         TimePanel timePanel = new TimePanel();
         JLabel leftLabel = (JLabel) timePanel.getComponents()[0];
-        String leftLabelTextBefore = leftLabel.getText();
 
-        BreakPoint breakPoint = BreakPointFactory.fromDescription("23:58 - message");
         timePanel.setLeftLabelValue(breakPoint);
+        String labelText = leftLabel.getText();
 
-        String leftLabelTextAfter = leftLabel.getText();
-
-        assertEquals("", leftLabelTextBefore);
-        assertEquals("23:58", leftLabelTextAfter);
+        assertEquals("23:58", labelText);
     }
 
-    @Test
-    void setRightLabelValue() {
+    @Test @Order(12)
+    @DisplayName("12. test setRightLabelValue()")
+    void testSetRightLabelValue() {
+        BreakPoint breakPoint = BreakPointFactory.fromDescription("23:59 - message");
         TimePanel timePanel = new TimePanel();
         JLabel leftLabel = (JLabel) timePanel.getComponents()[2];
-        String leftLabelTextBefore = leftLabel.getText();
 
-        BreakPoint breakPoint = BreakPointFactory.fromDescription("23:59 - message");
         timePanel.setRightLabelValue(breakPoint);
+        String labelText = leftLabel.getText();
 
-        String leftLabelTextAfter = leftLabel.getText();
-
-        assertEquals("", leftLabelTextBefore);
-        assertEquals("23:59", leftLabelTextAfter);
+        assertEquals("23:59", labelText);
     }
 
     private JLabel getCenterLabel() {
