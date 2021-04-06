@@ -130,7 +130,20 @@ class TimePanelTest {
     }
 
     @Test @Order(11)
-    @DisplayName("11. test setLeftLabelValue()")
+    @DisplayName("11. test setCenterLabelValue() - null passed")
+    void testSetCenterLabelValueWithNull() {
+        TimePanel timePanel = new TimePanel();
+        JLabel centerLabel = (JLabel) timePanel.getComponents()[1];
+
+        assertDoesNotThrow(() -> timePanel.setCenterLabelValue(null));
+        String labelText = centerLabel.getText();
+
+        assertNotNull(labelText);
+        assertEquals("", labelText);
+    }
+
+    @Test @Order(12)
+    @DisplayName("12. test setLeftLabelValue()")
     void testSetLeftLabelValue() {
         BreakPoint breakPoint = BreakPointFactory.fromDescription("23:58 - message");
         TimePanel timePanel = new TimePanel();
@@ -142,8 +155,21 @@ class TimePanelTest {
         assertEquals("23:58", labelText);
     }
 
-    @Test @Order(12)
-    @DisplayName("12. test setRightLabelValue()")
+    @Test @Order(13)
+    @DisplayName("13. test setLeftLabelValue() - null passed")
+    void testSetLeftLabelValueWithNull() {
+        TimePanel timePanel = new TimePanel();
+        JLabel leftLabel = (JLabel) timePanel.getComponents()[0];
+
+        assertDoesNotThrow(() -> timePanel.setLeftLabelValue(null));
+        String labelText = leftLabel.getText();
+
+        assertNotNull(labelText);
+        assertEquals("", labelText);
+    }
+
+    @Test @Order(14)
+    @DisplayName("14. test setRightLabelValue()")
     void testSetRightLabelValue() {
         BreakPoint breakPoint = BreakPointFactory.fromDescription("23:59 - message");
         TimePanel timePanel = new TimePanel();
@@ -153,6 +179,19 @@ class TimePanelTest {
         String labelText = leftLabel.getText();
 
         assertEquals("23:59", labelText);
+    }
+
+    @Test @Order(15)
+    @DisplayName("15. test setRightLabelValue() - null passed")
+    void testSetRightLabelValueWithNull() {
+        TimePanel timePanel = new TimePanel();
+        JLabel leftLabel = (JLabel) timePanel.getComponents()[2];
+
+        assertDoesNotThrow(() -> timePanel.setRightLabelValue(null));
+        String labelText = leftLabel.getText();
+
+        assertNotNull(labelText);
+        assertEquals("", labelText);
     }
 
     private JLabel getCenterLabel() {
