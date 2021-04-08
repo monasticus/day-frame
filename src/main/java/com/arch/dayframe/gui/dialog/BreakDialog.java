@@ -12,11 +12,11 @@ public class BreakDialog extends JDialog {
     private static final int DEFAULT_HEIGHT = 375;
     private static final String DIALOG_TITLE = "Break";
 
-    private JPanel mainPanel;
-    private JLabel timeLabel;
-    private JLabel messageLabel;
+    public JPanel mainPanel;
+    public JLabel timeLabel;
+    public JLabel messageLabel;
     public JComboBox<Integer> postponeList;
-    private JPanel buttonPanel;
+    public JPanel buttonPanel;
     public JButton okButton;
     public JButton postponeButton;
 
@@ -32,7 +32,6 @@ public class BreakDialog extends JDialog {
 
     public void resetLocation(){
         setDefaultLocation();
-        requestFocus();
     }
 
     public void completeDialog(BreakPoint breakPoint) {
