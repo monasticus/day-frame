@@ -221,13 +221,29 @@ class BreakDialogTest {
     }
 
     @Test @Order(20)
-    @DisplayName("20. Button Panel - Border Test")
+    @DisplayName("20. Postpone List - List Items Test")
+    void testPostponeListValues() {
+        int itemCount = postponeList.getItemCount();
+        Integer item1 = postponeList.getItemAt(0);
+        Integer item2 = postponeList.getItemAt(1);
+        Integer item3 = postponeList.getItemAt(2);
+        Integer selectedItem = (Integer) postponeList.getSelectedItem();
+
+        assertEquals(3, itemCount);
+        assertEquals(5, item1);
+        assertEquals(10, item2);
+        assertEquals(15, item3);
+        assertEquals(5, selectedItem);
+    }
+
+    @Test @Order(21)
+    @DisplayName("21. Button Panel - Border Test")
     void testButtonPanelBorder() {
         assertNull(buttonPanel.getBorder());
     }
 
-    @Test @Order(21)
-    @DisplayName("21. Button Panel - GridBagConstraints Test")
+    @Test @Order(22)
+    @DisplayName("22. Button Panel - GridBagConstraints Test")
     void testButtonPanelGridBagConstraints() {
         GridBagLayout layout = (GridBagLayout) mainPanel.getLayout();
         GridBagConstraints constraints = layout.getConstraints(buttonPanel);
@@ -240,8 +256,8 @@ class BreakDialogTest {
         testGBC(constraints, gridx, gridy, gridwidth, gridheight, DEFAULT, DEFAULT, DEFAULT_ANCHOR, DEFAULT_FILL, insets, DEFAULT, DEFAULT);
     }
 
-    @Test @Order(22)
-    @DisplayName("22. OK Button Test")
+    @Test @Order(23)
+    @DisplayName("23. OK Button Test")
     void testOkButton() {
         Font font = okButton.getFont();
 
@@ -251,8 +267,8 @@ class BreakDialogTest {
         assertEquals(12, font.getSize());
     }
 
-    @Test @Order(23)
-    @DisplayName("23. Postpone Button Test")
+    @Test @Order(24)
+    @DisplayName("24. Postpone Button Test")
     void testPostponeButton() {
         Font font = postponeButton.getFont();
 
@@ -262,44 +278,44 @@ class BreakDialogTest {
         assertEquals(12, font.getSize());
     }
 
-    @Test @Order(24)
-    @DisplayName("24. isMoved() - default")
+    @Test @Order(25)
+    @DisplayName("25. isMoved() - default")
     void isMovedByDefault() {
         assertFalse(breakDialog.isMoved());
     }
 
-    @Test @Order(25)
-    @DisplayName("25. isMoved() - default when visible")
+    @Test @Order(26)
+    @DisplayName("26. isMoved() - default when visible")
     void isMovedByDefaultWhenVisible() {
         breakDialog.setVisible(true);
         assertFalse(breakDialog.isMoved());
     }
 
-    @Test @Order(26)
-    @DisplayName("26. isMoved() - default when invisible")
+    @Test @Order(27)
+    @DisplayName("27. isMoved() - default when invisible")
     void isMovedByDefaultWhenInvisible() {
         breakDialog.setVisible(false);
         assertFalse(breakDialog.isMoved());
     }
 
-    @Test @Order(27)
-    @DisplayName("27. isMoved() - after location change when visible")
+    @Test @Order(28)
+    @DisplayName("28. isMoved() - after location change when visible")
     void isMovedAfterLocationChangeWhenVisible() {
         breakDialog.setVisible(true);
         breakDialog.setLocation(1, 1);
         assertTrue(breakDialog.isMoved());
     }
 
-    @Test @Order(28)
-    @DisplayName("28. isMoved() - after location change when invisible")
+    @Test @Order(29)
+    @DisplayName("29. isMoved() - after location change when invisible")
     void isMovedAfterLocationChangeWhenInvisible() {
         breakDialog.setVisible(false);
         breakDialog.setLocation(1, 1);
         assertFalse(breakDialog.isMoved());
     }
 
-    @Test @Order(29)
-    @DisplayName("29. resetLocation() - without location change")
+    @Test @Order(30)
+    @DisplayName("30. resetLocation() - without location change")
     void resetLocationWithoutLocationChange() {
         Point locationBefore = breakDialog.getLocation();
         breakDialog.resetLocation();
@@ -309,8 +325,8 @@ class BreakDialogTest {
         assertEquals(getDefaultLocation(), locationAfter);
     }
 
-    @Test @Order(30)
-    @DisplayName("30. resetLocation() - with location change")
+    @Test @Order(31)
+    @DisplayName("31. resetLocation() - with location change")
     void resetLocationWithLocationChange() {
         Point defaultLocation = getDefaultLocation();
         Point customizedLocation = new Point(1, 1);
@@ -325,8 +341,8 @@ class BreakDialogTest {
         assertEquals(defaultLocation, locationAfter);
     }
 
-    @Test @Order(31)
-    @DisplayName("31. completeDialog() - with ordinary break point")
+    @Test @Order(32)
+    @DisplayName("32. completeDialog() - with ordinary break point")
     void completeDialogWithOrinaryBreakPoint() {
         BreakPoint breakPoint = BreakPointFactory.fromDescription("23:59 - message");
 
@@ -352,8 +368,8 @@ class BreakDialogTest {
         assertTrue(postponeButtonEnabledAfter);
     }
 
-    @Test @Order(32)
-    @DisplayName("32. completeDialog() - with postponed break point")
+    @Test @Order(33)
+    @DisplayName("33. completeDialog() - with postponed break point")
     void completeDialogWithPostponedBreakPoint() {
         BreakPoint breakPoint = BreakPointFactory.fromDescription("23:55 - message");
         breakPoint.postpone(3);
