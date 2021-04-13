@@ -82,7 +82,16 @@ class TimePanelTest {
     }
 
     @Test @Order(7)
-    @DisplayName("07. Side Labels Font Test")
+    @DisplayName("07. Center Label's Foreground Test")
+    void testCenterLabelForeground() {
+        JLabel centerLabel = getCenterLabel();
+        Color labelForeground = centerLabel.getForeground();
+
+        assertEquals(Color.BLACK, labelForeground);
+    }
+
+    @Test @Order(8)
+    @DisplayName("08. Side Labels Font Test")
     void testSideLabelsFont() {
         List<JLabel> sideLabels = getSideLabels();
         sideLabels.forEach(sideLabel -> {
@@ -93,8 +102,8 @@ class TimePanelTest {
         });
     }
 
-    @Test @Order(8)
-    @DisplayName("08. Side Labels Border Test")
+    @Test @Order(9)
+    @DisplayName("09. Side Labels Border Test")
     void testSideLabelsBorder() {
         List<JLabel> sideLabels = getSideLabels();
         sideLabels.forEach(sideLabel -> {
@@ -110,15 +119,26 @@ class TimePanelTest {
         });
     }
 
-    @Test @Order(9)
-    @DisplayName("09. Default Label's Values Test")
+    @Test @Order(10)
+    @DisplayName("10. Side Labels Foreground Test")
+    void testSideLabelsForeground() {
+        List<JLabel> sideLabels = getSideLabels();
+        JLabel leftLabel = sideLabels.get(0);
+        JLabel rightLabel = sideLabels.get(1);
+
+        assertEquals(Color.BLACK, leftLabel.getForeground());
+        assertEquals(Color.BLACK, rightLabel.getForeground());
+    }
+
+    @Test @Order(11)
+    @DisplayName("11. Default Label's Values Test")
     void testDefaultLabelValues() {
         List<JLabel> labels = getLabels();
         labels.forEach(label -> assertEquals("", label.getText()));
     }
 
-    @Test @Order(10)
-    @DisplayName("10. test setCenterLabelValue()")
+    @Test @Order(12)
+    @DisplayName("12. test setCenterLabelValue()")
     void testSetCenterLabelValue() {
         TimePanel timePanel = new TimePanel();
         JLabel centerLabel = (JLabel) timePanel.getComponents()[1];
@@ -129,21 +149,23 @@ class TimePanelTest {
         assertEquals("12:23:05.0", labelText);
     }
 
-    @Test @Order(11)
-    @DisplayName("11. test setCenterLabelValue() - null passed")
+    @Test @Order(13)
+    @DisplayName("13. test setCenterLabelValue() - null passed")
     void testSetCenterLabelValueWithNull() {
         TimePanel timePanel = new TimePanel();
         JLabel centerLabel = (JLabel) timePanel.getComponents()[1];
 
         assertDoesNotThrow(() -> timePanel.setCenterLabelValue(null));
         String labelText = centerLabel.getText();
+        Color labelForeground = centerLabel.getForeground();
 
         assertNotNull(labelText);
         assertEquals("", labelText);
+        assertEquals(Color.BLACK, labelForeground);
     }
 
-    @Test @Order(12)
-    @DisplayName("12. test setLeftLabelValue()")
+    @Test @Order(14)
+    @DisplayName("14. test setLeftLabelValue()")
     void testSetLeftLabelValue() {
         BreakPoint breakPoint = BreakPointFactory.fromDescription("23:58 - message");
         TimePanel timePanel = new TimePanel();
@@ -151,25 +173,45 @@ class TimePanelTest {
 
         timePanel.setLeftLabelValue(breakPoint);
         String labelText = leftLabel.getText();
+        Color labelColor = leftLabel.getForeground();
 
         assertEquals("23:58", labelText);
+        assertEquals(Color.BLACK, labelColor);
     }
 
-    @Test @Order(13)
-    @DisplayName("13. test setLeftLabelValue() - null passed")
+    @Test @Order(15)
+    @DisplayName("15. test setLeftLabelValue() - postponed break point passed")
+    void testSetLeftLabelValueWithPostponedBreakPoint() {
+        BreakPoint breakPoint = BreakPointFactory.fromDescription("23:57 - message");
+        breakPoint.postpone(1);
+        TimePanel timePanel = new TimePanel();
+        JLabel leftLabel = (JLabel) timePanel.getComponents()[0];
+
+        timePanel.setLeftLabelValue(breakPoint);
+        String labelText = leftLabel.getText();
+        Color labelColor = leftLabel.getForeground();
+
+        assertEquals("23:58", labelText);
+        assertEquals(Color.BLACK, labelColor);
+    }
+
+    @Test @Order(16)
+    @DisplayName("16. test setLeftLabelValue() - null passed")
     void testSetLeftLabelValueWithNull() {
         TimePanel timePanel = new TimePanel();
         JLabel leftLabel = (JLabel) timePanel.getComponents()[0];
 
         assertDoesNotThrow(() -> timePanel.setLeftLabelValue(null));
         String labelText = leftLabel.getText();
+        Color labelColor = leftLabel.getForeground();
 
         assertNotNull(labelText);
         assertEquals("", labelText);
+        assertEquals(Color.BLACK, labelColor);
     }
 
-    @Test @Order(14)
-    @DisplayName("14. test setRightLabelValue()")
+    @Test @Order(17)
+    @DisplayName("17. test setRightLabelValue()")
     void testSetRightLabelValue() {
         BreakPoint breakPoint = BreakPointFactory.fromDescription("23:59 - message");
         TimePanel timePanel = new TimePanel();
@@ -177,21 +219,41 @@ class TimePanelTest {
 
         timePanel.setRightLabelValue(breakPoint);
         String labelText = leftLabel.getText();
+        Color labelColor = leftLabel.getForeground();
 
         assertEquals("23:59", labelText);
+        assertEquals(Color.BLACK, labelColor);
     }
 
-    @Test @Order(15)
-    @DisplayName("15. test setRightLabelValue() - null passed")
+    @Test @Order(18)
+    @DisplayName("18. test setRightLabelValue() - postponed break point passed")
+    void testSetRightLabelValueWithPostponedBreakPoint() {
+        BreakPoint breakPoint = BreakPointFactory.fromDescription("23:58 - message");
+        breakPoint.postpone(1);
+        TimePanel timePanel = new TimePanel();
+        JLabel leftLabel = (JLabel) timePanel.getComponents()[2];
+
+        timePanel.setRightLabelValue(breakPoint);
+        String labelText = leftLabel.getText();
+        Color labelColor = leftLabel.getForeground();
+
+        assertEquals("23:59", labelText);
+        assertEquals(Color.RED, labelColor);
+    }
+
+    @Test @Order(19)
+    @DisplayName("19. test setRightLabelValue() - null passed")
     void testSetRightLabelValueWithNull() {
         TimePanel timePanel = new TimePanel();
         JLabel leftLabel = (JLabel) timePanel.getComponents()[2];
 
         assertDoesNotThrow(() -> timePanel.setRightLabelValue(null));
         String labelText = leftLabel.getText();
+        Color labelColor = leftLabel.getForeground();
 
         assertNotNull(labelText);
         assertEquals("", labelText);
+        assertEquals(Color.BLACK, labelColor);
     }
 
     private JLabel getCenterLabel() {

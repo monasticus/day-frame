@@ -53,16 +53,19 @@ public class TimePanel extends JPanel {
         centerLabel.setHorizontalAlignment(SwingConstants.CENTER);
         centerLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 22));
         centerLabel.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, Color.BLACK));
+        centerLabel.setForeground(Color.BLACK);
         add(centerLabel);
     }
 
     private void buildLeftLabel() {
         leftLabel = new JLabel();
+        leftLabel.setForeground(Color.BLACK);
         buildSideLabel(leftLabel);
     }
 
     private void buildRightLabel() {
         rightLabel = new JLabel();
+        rightLabel.setForeground(Color.BLACK);
         buildSideLabel(rightLabel);
     }
 
