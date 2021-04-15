@@ -5,7 +5,7 @@ import com.arch.dayframe.model.bp.BreakPointException.ErrorCode;
 import java.util.Calendar;
 import java.util.Objects;
 
-class BPSimpleTime implements SimpleTime {
+public class BPSimpleTime implements SimpleTime {
 
     private static final String TIME_FORMAT = "%02d:%02d";
 
