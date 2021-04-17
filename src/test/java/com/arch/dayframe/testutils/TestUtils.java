@@ -1,4 +1,4 @@
-package com.arch.dayframe;
+package com.arch.dayframe.testutils;
 
 import com.arch.dayframe.model.bp.BPSimpleTime;
 import com.arch.dayframe.model.bp.BreakPoint;
