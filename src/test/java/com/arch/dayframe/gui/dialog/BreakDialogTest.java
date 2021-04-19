@@ -107,8 +107,9 @@ class BreakDialogTest {
     @Test @Order(11)
     @DisplayName("11. Time Label - Border Test")
     void testTimeLabelBorder() {
-        Color borderColor = breakDialogState.timeLabelBorder.getMatteColor();
-        Insets borderInsets = breakDialogState.timeLabelBorder.getBorderInsets();
+        MatteBorder timeLabelBorder = (MatteBorder) breakDialogState.timeLabelBorder;
+        Color borderColor = timeLabelBorder.getMatteColor();
+        Insets borderInsets = timeLabelBorder.getBorderInsets();
 
         assertEquals(Color.BLACK, borderColor);
         assertEquals(1, borderInsets.top);
