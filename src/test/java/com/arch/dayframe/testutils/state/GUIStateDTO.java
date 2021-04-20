@@ -38,6 +38,10 @@ public class GUIStateDTO {
         return dialog.isModal();
     }
 
+    protected boolean isResizable(Frame frame) {
+        return frame.isResizable();
+    }
+
     protected boolean isResizable(Dialog dialog) {
         return dialog.isResizable();
     }
@@ -56,6 +60,14 @@ public class GUIStateDTO {
 
     protected JButton getDefaultButton(JDialog dialog) {
         return dialog.getRootPane().getDefaultButton();
+    }
+
+    protected int getSizeWidth(Component component) {
+        return component.getSize().width;
+    }
+
+    protected int getSizeHeight(Component component) {
+        return component.getSize().height;
     }
 
     protected int getPreferredSizeWidth(Component component) {
