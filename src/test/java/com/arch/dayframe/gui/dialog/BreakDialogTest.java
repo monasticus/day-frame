@@ -4,6 +4,7 @@ import com.arch.dayframe.gui.utils.GBC;
 import com.arch.dayframe.model.bp.BreakPoint;
 import com.arch.dayframe.model.bp.BreakPointFactory;
 import com.arch.dayframe.testutils.state.BreakDialogStateDTO;
+import com.arch.dayframe.testutils.state.GUIStateDTOFactory;
 import org.junit.jupiter.api.*;
 
 import javax.swing.*;
@@ -28,7 +29,7 @@ class BreakDialogTest {
     @BeforeEach
     void setUp() {
         breakDialog = new BreakDialog(new Frame());
-        breakDialogState = getBreakDialogState();
+        breakDialogState = GUIStateDTOFactory.ofBreakDialog(breakDialog);
     }
 
     @Test @Order(1)
@@ -283,9 +284,9 @@ class BreakDialogTest {
     @Test @Order(30)
     @DisplayName("30. resetLocation() - without location change")
     void resetLocationWithoutLocationChange() {
-        BreakDialogStateDTO breakDialogStateBefore = getBreakDialogState();
+        BreakDialogStateDTO breakDialogStateBefore = GUIStateDTOFactory.ofBreakDialog(breakDialog);
         breakDialog.resetLocation();
-        BreakDialogStateDTO breakDialogStateAfter = getBreakDialogState();
+        BreakDialogStateDTO breakDialogStateAfter = GUIStateDTOFactory.ofBreakDialog(breakDialog);
 
         assertEquals(breakDialogStateBefore.location, breakDialogStateAfter.location);
         assertEquals(getDefaultLocation(), breakDialogStateAfter.location);
@@ -298,9 +299,9 @@ class BreakDialogTest {
         Point customizedLocation = new Point(1, 1);
         breakDialog.setLocation(customizedLocation);
 
-        BreakDialogStateDTO breakDialogStateBefore = getBreakDialogState();
+        BreakDialogStateDTO breakDialogStateBefore = GUIStateDTOFactory.ofBreakDialog(breakDialog);
         breakDialog.resetLocation();
-        BreakDialogStateDTO breakDialogStateAfter = getBreakDialogState();
+        BreakDialogStateDTO breakDialogStateAfter = GUIStateDTOFactory.ofBreakDialog(breakDialog);
 
         assertNotEquals(breakDialogStateBefore.location, breakDialogStateAfter.location);
         assertEquals(customizedLocation, breakDialogStateBefore.location);
@@ -312,9 +313,9 @@ class BreakDialogTest {
     void completeDialogWithOrdinaryBreakPoint() {
         BreakPoint breakPoint = BreakPointFactory.fromDescription("23:59 - message");
 
-        BreakDialogStateDTO breakDialogStateBefore = getBreakDialogState();
+        BreakDialogStateDTO breakDialogStateBefore = GUIStateDTOFactory.ofBreakDialog(breakDialog);
         breakDialog.completeDialog(breakPoint);
-        BreakDialogStateDTO breakDialogStateAfter = getBreakDialogState();
+        BreakDialogStateDTO breakDialogStateAfter = GUIStateDTOFactory.ofBreakDialog(breakDialog);
 
         assertEquals("", breakDialogStateBefore.timeLabelText);
         assertEquals("", breakDialogStateBefore.messageLabelText);
@@ -332,9 +333,9 @@ class BreakDialogTest {
         BreakPoint breakPoint = BreakPointFactory.fromDescription("23:55 - message");
         breakPoint.postpone(3);
 
-        BreakDialogStateDTO breakDialogStateBefore = getBreakDialogState();
+        BreakDialogStateDTO breakDialogStateBefore = GUIStateDTOFactory.ofBreakDialog(breakDialog);
         breakDialog.completeDialog(breakPoint);
-        BreakDialogStateDTO breakDialogStateAfter = getBreakDialogState();
+        BreakDialogStateDTO breakDialogStateAfter = GUIStateDTOFactory.ofBreakDialog(breakDialog);
 
         assertEquals("", breakDialogStateBefore.timeLabelText);
         assertEquals("", breakDialogStateBefore.messageLabelText);
@@ -368,9 +369,5 @@ class BreakDialogTest {
         assertEquals(insets, gbc.insets, "Wrong insets");
         assertEquals(ipadx, gbc.ipadx, "Wrong ipadx");
         assertEquals(ipady, gbc.ipady, "Wrong ipady");
-    }
-
-    private BreakDialogStateDTO getBreakDialogState() {
-        return new BreakDialogStateDTO(breakDialog);
     }
 }

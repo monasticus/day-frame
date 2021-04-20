@@ -55,7 +55,7 @@ public class BreakDialogStateDTO extends GUIStateDTO {
     public List<Component> labels;
     public List<Integer> postponeListItems;
 
-    public BreakDialogStateDTO(BreakDialog breakDialog) {
+    protected BreakDialogStateDTO(BreakDialog breakDialog) {
         layout = getLayoutManager(breakDialog.mainPanel);
         background = getBackground(breakDialog.mainPanel);
         location = getLocation(breakDialog);

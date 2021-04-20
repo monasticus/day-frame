@@ -21,7 +21,7 @@ public class BreakPointsPanelStateDTO extends GUIStateDTO {
     public float firstLabelAlignmentX;
     public float firstLabelAlignmentY;
 
-    public BreakPointsPanelStateDTO(BreakPointsPanel breakPointsPanel) {
+    protected BreakPointsPanelStateDTO(BreakPointsPanel breakPointsPanel) {
         layout = getLayoutManager(breakPointsPanel);
         background = getBackground(breakPointsPanel);
         labels = getComponents(breakPointsPanel);

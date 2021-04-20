@@ -3,6 +3,7 @@ package com.arch.dayframe.gui.panel;
 import com.arch.dayframe.model.bp.BreakPoint;
 import com.arch.dayframe.model.bp.BreakPointFactory;
 import com.arch.dayframe.testutils.state.BreakPointsPanelStateDTO;
+import com.arch.dayframe.testutils.state.GUIStateDTOFactory;
 import org.junit.jupiter.api.*;
 
 import javax.swing.*;
@@ -23,7 +24,7 @@ class BreakPointsPanelTest {
     @BeforeAll
     static void beforeAll() {
         defaultBreakPointsPanel = new BreakPointsPanel();
-        defaultBreakPointsPanelState = new BreakPointsPanelStateDTO(defaultBreakPointsPanel);
+        defaultBreakPointsPanelState = GUIStateDTOFactory.ofBreakPointsPanel(defaultBreakPointsPanel);
     }
 
     @AfterEach
@@ -62,7 +63,7 @@ class BreakPointsPanelTest {
     @DisplayName("05. BP Label's Alignment Test")
     void testBPLabelAlignment() {
         addRegularBPLabel();
-        BreakPointsPanelStateDTO breakPointsPanelState = new BreakPointsPanelStateDTO(defaultBreakPointsPanel);
+        BreakPointsPanelStateDTO breakPointsPanelState = GUIStateDTOFactory.ofBreakPointsPanel(defaultBreakPointsPanel);
 
         assertEquals(SwingConstants.CENTER, breakPointsPanelState.firstLabelAlignmentX);
         assertEquals(Component.CENTER_ALIGNMENT, breakPointsPanelState.firstLabelAlignmentY);
@@ -72,7 +73,7 @@ class BreakPointsPanelTest {
     @DisplayName("06. BP Label's Font Test")
     void testBPLabelFont() {
         addRegularBPLabel();
-        BreakPointsPanelStateDTO breakPointsPanelState = new BreakPointsPanelStateDTO(defaultBreakPointsPanel);
+        BreakPointsPanelStateDTO breakPointsPanelState = GUIStateDTOFactory.ofBreakPointsPanel(defaultBreakPointsPanel);
 
         assertEquals(Font.SANS_SERIF, breakPointsPanelState.firstLabelFontFamily);
         assertEquals(Font.BOLD, breakPointsPanelState.firstLabelFontStyle);
@@ -83,7 +84,7 @@ class BreakPointsPanelTest {
     @DisplayName("07. BP Label's Foreground Color Test - for regular break point")
     void testBPLabelColorForRegularBreakPoint() {
         addRegularBPLabel();
-        BreakPointsPanelStateDTO breakPointsPanelState = new BreakPointsPanelStateDTO(defaultBreakPointsPanel);
+        BreakPointsPanelStateDTO breakPointsPanelState = GUIStateDTOFactory.ofBreakPointsPanel(defaultBreakPointsPanel);
 
         assertEquals(Color.BLACK, breakPointsPanelState.firstLabelForeground);
     }
@@ -92,7 +93,7 @@ class BreakPointsPanelTest {
     @DisplayName("08. BP Label's Foreground Color Test - for postponed break point")
     void testBPLabelColorForPostponedBreakPoint() {
         addPostponedBPLabel();
-        BreakPointsPanelStateDTO breakPointsPanelState = new BreakPointsPanelStateDTO(defaultBreakPointsPanel);
+        BreakPointsPanelStateDTO breakPointsPanelState = GUIStateDTOFactory.ofBreakPointsPanel(defaultBreakPointsPanel);
 
         assertEquals(Color.RED, breakPointsPanelState.firstLabelForeground);
     }
@@ -102,7 +103,7 @@ class BreakPointsPanelTest {
     void testAddBreakPoints() {
         List<BreakPoint> breakPoints = getTestBreakPointList();
         defaultBreakPointsPanel.addBreakPoints(breakPoints);
-        BreakPointsPanelStateDTO breakPointsPanelState = new BreakPointsPanelStateDTO(defaultBreakPointsPanel);
+        BreakPointsPanelStateDTO breakPointsPanelState = GUIStateDTOFactory.ofBreakPointsPanel(defaultBreakPointsPanel);
 
         assertEquals(3, breakPointsPanelState.componentsCount);
         assertEquals(Color.BLACK, breakPointsPanelState.labels.get(0).getForeground());
@@ -115,11 +116,11 @@ class BreakPointsPanelTest {
     void testAddBreakPointsTwice() {
         List<BreakPoint> breakPoints = getTestBreakPointList();
 
-        BreakPointsPanelStateDTO breakPointsPanelStateBefore = new BreakPointsPanelStateDTO(defaultBreakPointsPanel);
+        BreakPointsPanelStateDTO breakPointsPanelStateBefore = GUIStateDTOFactory.ofBreakPointsPanel(defaultBreakPointsPanel);
         defaultBreakPointsPanel.addBreakPoints(breakPoints);
-        BreakPointsPanelStateDTO breakPointsPanelStateAfterFirst = new BreakPointsPanelStateDTO(defaultBreakPointsPanel);
+        BreakPointsPanelStateDTO breakPointsPanelStateAfterFirst = GUIStateDTOFactory.ofBreakPointsPanel(defaultBreakPointsPanel);
         defaultBreakPointsPanel.addBreakPoints(breakPoints);
-        BreakPointsPanelStateDTO breakPointsPanelStateAfterSecond = new BreakPointsPanelStateDTO(defaultBreakPointsPanel);
+        BreakPointsPanelStateDTO breakPointsPanelStateAfterSecond = GUIStateDTOFactory.ofBreakPointsPanel(defaultBreakPointsPanel);
 
         assertEquals(0, breakPointsPanelStateBefore.componentsCount);
         assertEquals(3, breakPointsPanelStateAfterFirst.componentsCount);
@@ -132,9 +133,9 @@ class BreakPointsPanelTest {
         List<BreakPoint> breakPoints = getTestBreakPointList();
         defaultBreakPointsPanel.addBreakPoints(breakPoints);
 
-        BreakPointsPanelStateDTO breakPointsPanelStateBefore = new BreakPointsPanelStateDTO(defaultBreakPointsPanel);
+        BreakPointsPanelStateDTO breakPointsPanelStateBefore = GUIStateDTOFactory.ofBreakPointsPanel(defaultBreakPointsPanel);
         defaultBreakPointsPanel.cleanBreakPoints();
-        BreakPointsPanelStateDTO breakPointsPanelStateAfter = new BreakPointsPanelStateDTO(defaultBreakPointsPanel);
+        BreakPointsPanelStateDTO breakPointsPanelStateAfter = GUIStateDTOFactory.ofBreakPointsPanel(defaultBreakPointsPanel);
 
         assertEquals(3, breakPointsPanelStateBefore.componentsCount);
         assertEquals(0, breakPointsPanelStateAfter.componentsCount);
@@ -143,9 +144,9 @@ class BreakPointsPanelTest {
     @Test @Order(12)
     @DisplayName("12. test cleanBreakPoints() with no labels")
     void testCleanBreakPointsWithNoLabels() {
-        BreakPointsPanelStateDTO breakPointsPanelStateBefore = new BreakPointsPanelStateDTO(defaultBreakPointsPanel);
+        BreakPointsPanelStateDTO breakPointsPanelStateBefore = GUIStateDTOFactory.ofBreakPointsPanel(defaultBreakPointsPanel);
         assertDoesNotThrow(() -> defaultBreakPointsPanel.cleanBreakPoints());
-        BreakPointsPanelStateDTO breakPointsPanelStateAfter = new BreakPointsPanelStateDTO(defaultBreakPointsPanel);
+        BreakPointsPanelStateDTO breakPointsPanelStateAfter = GUIStateDTOFactory.ofBreakPointsPanel(defaultBreakPointsPanel);
 
         assertEquals(0, breakPointsPanelStateBefore.componentsCount);
         assertEquals(0, breakPointsPanelStateAfter.componentsCount);
@@ -158,9 +159,9 @@ class BreakPointsPanelTest {
         BreakPoint postponedBreakPoint = breakPoints.get(1);
         defaultBreakPointsPanel.addBreakPoints(breakPoints);
 
-        BreakPointsPanelStateDTO breakPointsPanelStateBefore = new BreakPointsPanelStateDTO(defaultBreakPointsPanel);
+        BreakPointsPanelStateDTO breakPointsPanelStateBefore = GUIStateDTOFactory.ofBreakPointsPanel(defaultBreakPointsPanel);
         defaultBreakPointsPanel.removeBreakPoint(postponedBreakPoint);
-        BreakPointsPanelStateDTO breakPointsPanelStateAfter = new BreakPointsPanelStateDTO(defaultBreakPointsPanel);
+        BreakPointsPanelStateDTO breakPointsPanelStateAfter = GUIStateDTOFactory.ofBreakPointsPanel(defaultBreakPointsPanel);
 
         assertEquals(3, breakPointsPanelStateBefore.componentsCount);
         assertEquals(2, breakPointsPanelStateAfter.componentsCount);
@@ -175,9 +176,9 @@ class BreakPointsPanelTest {
         defaultBreakPointsPanel.addBreakPoints(breakPoints);
         BreakPoint nonexistentBreakPoint = BreakPointFactory.fromDescription("23:00 - non existent break point");
 
-        BreakPointsPanelStateDTO breakPointsPanelStateBefore = new BreakPointsPanelStateDTO(defaultBreakPointsPanel);
+        BreakPointsPanelStateDTO breakPointsPanelStateBefore = GUIStateDTOFactory.ofBreakPointsPanel(defaultBreakPointsPanel);
         assertDoesNotThrow(() -> defaultBreakPointsPanel.removeBreakPoint(nonexistentBreakPoint));
-        BreakPointsPanelStateDTO breakPointsPanelStateAfter = new BreakPointsPanelStateDTO(defaultBreakPointsPanel);
+        BreakPointsPanelStateDTO breakPointsPanelStateAfter = GUIStateDTOFactory.ofBreakPointsPanel(defaultBreakPointsPanel);
 
         assertEquals(3, breakPointsPanelStateBefore.componentsCount);
         assertEquals(3, breakPointsPanelStateAfter.componentsCount);
@@ -189,9 +190,9 @@ class BreakPointsPanelTest {
         List<BreakPoint> breakPoints = getTestBreakPointList();
         defaultBreakPointsPanel.addBreakPoints(breakPoints);
 
-        BreakPointsPanelStateDTO breakPointsPanelStateBefore = new BreakPointsPanelStateDTO(defaultBreakPointsPanel);
+        BreakPointsPanelStateDTO breakPointsPanelStateBefore = GUIStateDTOFactory.ofBreakPointsPanel(defaultBreakPointsPanel);
         assertDoesNotThrow(() -> defaultBreakPointsPanel.removeBreakPoint(null));
-        BreakPointsPanelStateDTO breakPointsPanelStateAfter = new BreakPointsPanelStateDTO(defaultBreakPointsPanel);
+        BreakPointsPanelStateDTO breakPointsPanelStateAfter = GUIStateDTOFactory.ofBreakPointsPanel(defaultBreakPointsPanel);
 
         assertEquals(3, breakPointsPanelStateBefore.componentsCount);
         assertEquals(3, breakPointsPanelStateAfter.componentsCount);
