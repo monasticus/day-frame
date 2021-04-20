@@ -2,6 +2,7 @@ package com.arch.dayframe.testutils.state;
 
 import com.arch.dayframe.gui.dialog.BreakDialog;
 import com.arch.dayframe.gui.panel.BreakPointsPanel;
+import com.arch.dayframe.gui.panel.TimePanel;
 
 public class GUIStateDTOFactory {
 
@@ -11,5 +12,9 @@ public class GUIStateDTOFactory {
 
     public static BreakPointsPanelStateDTO ofBreakPointsPanel(BreakPointsPanel breakPointsPanel) {
         return new BreakPointsPanelStateDTO(breakPointsPanel);
+    }
+
+    public static TimePanelStateDTO ofTimePanel(TimePanel timePanel) {
+        return new TimePanelStateDTO(timePanel);
     }
 }

@@ -29,7 +29,7 @@ public class BreakPointsPanelStateDTO extends GUIStateDTO {
         preferredSizeHeight = getPreferredSizeHeight(breakPointsPanel);
         componentsCount = getComponentCount(breakPointsPanel);
 
-        Component firstLabel = labels.size() > 0 ? labels.get(0) : null;
+        Component firstLabel = componentsCount > 0 ? labels.get(0) : null;
         firstLabelForeground = firstLabel == null ? null : getForeground(firstLabel);
         firstLabelFontFamily = firstLabel == null ? null : getFontFamily(firstLabel);
         firstLabelFontStyle = firstLabel == null ? -1 : getFontStyle(firstLabel);
