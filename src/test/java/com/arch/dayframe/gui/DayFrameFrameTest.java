@@ -4,14 +4,15 @@ import com.arch.dayframe.gui.panel.BreakPointsPanel;
 import com.arch.dayframe.gui.panel.TimePanel;
 import com.arch.dayframe.model.bp.BreakPoint;
 import com.arch.dayframe.model.bp.BreakPointFactory;
+import com.arch.dayframe.testutils.state.BreakPointsPanelStateDTO;
+import com.arch.dayframe.testutils.state.DayFrameFrameStateDTO;
+import com.arch.dayframe.testutils.state.GUIStateDTOFactory;
+import com.arch.dayframe.testutils.state.TimePanelStateDTO;
 import org.junit.jupiter.api.*;
 
-import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
 import java.util.List;
 import java.util.prefs.Preferences;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,6 +26,7 @@ class DayFrameFrameTest {
     private static int DEFAULT_Y;
 
     private static DayFrameFrame dayFrame;
+    private static DayFrameFrameStateDTO defaultDayFrameState;
 
     @BeforeAll
     static void beforeAll() {
@@ -39,6 +41,7 @@ class DayFrameFrameTest {
     void setUp() {
         resetPreferences();
         dayFrame = new DayFrameFrame();
+        defaultDayFrameState = GUIStateDTOFactory.ofDayFrameFrame(dayFrame);
     }
 
     @AfterAll
@@ -55,65 +58,48 @@ class DayFrameFrameTest {
     @Test @Order(1)
     @DisplayName("01. Default Size Test")
     void testSize() {
-        Dimension dayFrameSize = dayFrame.getSize();
-        assertEquals(DEFAULT_WIDTH, dayFrameSize.width);
-        assertEquals(DEFAULT_HEIGHT, dayFrameSize.height);
+        assertEquals(DEFAULT_WIDTH, defaultDayFrameState.width);
+        assertEquals(DEFAULT_HEIGHT, defaultDayFrameState.height);
     }
 
     @Test @Order(2)
     @DisplayName("02. Resizable Test")
     void testResizable() {
-        assertFalse(dayFrame.isResizable());
+        assertFalse(defaultDayFrameState.resizable);
     }
 
     @Test @Order(3)
     @DisplayName("03. Default Location Test")
     void testLocationByDefault() {
-        Point dayFrameLocation = dayFrame.getLocation();
-        assertEquals(DEFAULT_X, dayFrameLocation.x);
-        assertEquals(DEFAULT_Y, dayFrameLocation.y);
+        Point expectedLocation = new Point(DEFAULT_X, DEFAULT_Y);
+        assertEquals(expectedLocation, defaultDayFrameState.location);
     }
 
     @Test @Order(4)
     @DisplayName("04. Default Location Test - for new instance, after moving first one and saving")
     void testNewInstanceLocationAfterMovingFirstInstance() {
-        dayFrame.setLocation(1, 1);
+        Point customizedLocation = new Point(1, 1);
+        dayFrame.setLocation(customizedLocation);
         dayFrame.saveLocation();
-        DayFrameFrame newDayFrame = new DayFrameFrame();
 
-        Point newDayFrameLocation = newDayFrame.getLocation();
-        assertEquals(1, newDayFrameLocation.x);
-        assertEquals(1, newDayFrameLocation.y);
+        DayFrameFrameStateDTO oldDayFrameState = GUIStateDTOFactory.ofDayFrameFrame(dayFrame);
+        DayFrameFrameStateDTO newDayFrameState = GUIStateDTOFactory.ofDayFrameFrame(new DayFrameFrame());
+
+        assertEquals(oldDayFrameState.location, newDayFrameState.location);
     }
 
     @Test @Order(5)
     @DisplayName("05. Default Layout Test")
     void testDefaultLayout() {
-        LayoutManager layout = dayFrame.getLayout();
-        assertTrue(layout instanceof BorderLayout);
+        assertTrue(defaultDayFrameState.layout instanceof BorderLayout);
     }
 
     @Test @Order(6)
-    @DisplayName("06. Components Tree Test")
+    @DisplayName("06. General Components Test")
     void testComponents() {
-        int dayFrameComponentCount = dayFrame.getComponentCount();
-        JRootPane jRootPane = (JRootPane) dayFrame.getComponent(0);
+        long timePanelsCount = defaultDayFrameState.panels.stream().filter(c -> c instanceof TimePanel).count();
+        long breakPointPanelsCount = defaultDayFrameState.panels.stream().filter(c -> c instanceof BreakPointsPanel).count();
 
-        int jRootPaneComponentCount = jRootPane.getComponentCount();
-        JLayeredPane jLayeredPane = Arrays.stream(jRootPane.getComponents()).filter(c -> c instanceof JLayeredPane).map(c -> (JLayeredPane) c).findFirst().orElse(null);
-
-        int jLayeredPaneComponentCount = jLayeredPane.getComponentCount();
-        JPanel directParent = (JPanel) jLayeredPane.getComponent(0);
-
-        int directParentComponentCount = directParent.getComponentCount();
-        List<Component> components = Arrays.stream(directParent.getComponents()).collect(Collectors.toList());
-        long timePanelsCount = components.stream().filter(c -> c instanceof TimePanel).count();
-        long breakPointPanelsCount = components.stream().filter(c -> c instanceof BreakPointsPanel).count();
-
-        assertEquals(1, dayFrameComponentCount);
-        assertEquals(2, jRootPaneComponentCount);
-        assertEquals(1, jLayeredPaneComponentCount);
-        assertEquals(5, directParentComponentCount);
         assertEquals(1L, timePanelsCount);
         assertEquals(1L, breakPointPanelsCount);
     }
@@ -121,42 +107,38 @@ class DayFrameFrameTest {
     @Test @Order(7)
     @DisplayName("07. setClockValue()")
     void testSetClockValue() {
-        JLabel clockLabel = (JLabel) dayFrame.northPanel.getComponent(1);
-
-        String textBefore = clockLabel.getText();
+        TimePanelStateDTO timePanelStateBefore = GUIStateDTOFactory.ofTimePanel(dayFrame.northPanel);
         dayFrame.setClockValue("23:59:59.9");
-        String textAfter = clockLabel.getText();
+        TimePanelStateDTO timePanelStateAfter = GUIStateDTOFactory.ofTimePanel(dayFrame.northPanel);
 
-        assertEquals("", textBefore);
-        assertEquals("23:59:59.9", textAfter);
+        assertEquals("", timePanelStateBefore.centerLabelText);
+        assertEquals("23:59:59.9", timePanelStateAfter.centerLabelText);
     }
 
     @Test @Order(8)
     @DisplayName("08. setRecentBreakPoint()")
     void testSetRecentBreakPoint() {
-        JLabel recentBreakPointLabel = (JLabel) dayFrame.northPanel.getComponent(0);
         BreakPoint breakPoint = BreakPointFactory.fromDescription("23:59 - message");
 
-        String textBefore = recentBreakPointLabel.getText();
+        TimePanelStateDTO timePanelStateBefore = GUIStateDTOFactory.ofTimePanel(dayFrame.northPanel);
         dayFrame.setRecentBreakPoint(breakPoint);
-        String textAfter = recentBreakPointLabel.getText();
+        TimePanelStateDTO timePanelStateAfter = GUIStateDTOFactory.ofTimePanel(dayFrame.northPanel);
 
-        assertEquals("", textBefore);
-        assertEquals("23:59", textAfter);
+        assertEquals("", timePanelStateBefore.leftLabelText);
+        assertEquals("23:59", timePanelStateAfter.leftLabelText);
     }
 
     @Test @Order(9)
     @DisplayName("09. setNextBreakPoint()")
     void testSetNextBreakPoint() {
-        JLabel nextBreakPointLabel = (JLabel) dayFrame.northPanel.getComponent(2);
         BreakPoint breakPoint = BreakPointFactory.fromDescription("23:59 - message");
 
-        String textBefore = nextBreakPointLabel.getText();
+        TimePanelStateDTO timePanelStateBefore = GUIStateDTOFactory.ofTimePanel(dayFrame.northPanel);
         dayFrame.setNextBreakPoint(breakPoint);
-        String textAfter = nextBreakPointLabel.getText();
+        TimePanelStateDTO timePanelStateAfter = GUIStateDTOFactory.ofTimePanel(dayFrame.northPanel);
 
-        assertEquals("", textBefore);
-        assertEquals("23:59", textAfter);
+        assertEquals("", timePanelStateBefore.rightLabelText);
+        assertEquals("23:59", timePanelStateAfter.rightLabelText);
     }
 
     @Test @Order(10)
@@ -164,17 +146,16 @@ class DayFrameFrameTest {
     void testSetBreakPointsList() {
         List<BreakPoint> breakPoints = BreakPointFactory.fromDescriptions(List.of("23:56", "23:58 - message 2", "23:59", "23:57 - message"));
 
-        int componentCountBefore = dayFrame.eastPanel.getComponentCount();
+        BreakPointsPanelStateDTO breakPointsPanelStateBefore = GUIStateDTOFactory.ofBreakPointsPanel(dayFrame.eastPanel);
         dayFrame.setBreakPointsList(breakPoints);
-        int componentCountAfter = dayFrame.eastPanel.getComponentCount();
-        List<JLabel> breakComponents = Arrays.stream(dayFrame.eastPanel.getComponents()).map(c -> (JLabel) c).collect(Collectors.toList());
+        BreakPointsPanelStateDTO breakPointsPanelStateAfter = GUIStateDTOFactory.ofBreakPointsPanel(dayFrame.eastPanel);
 
-        assertEquals(0, componentCountBefore);
-        assertEquals(4, componentCountAfter);
-        assertEquals("23:56", breakComponents.get(0).getText());
-        assertEquals("23:57", breakComponents.get(1).getText());
-        assertEquals("23:58", breakComponents.get(2).getText());
-        assertEquals("23:59", breakComponents.get(3).getText());
+        assertEquals(0, breakPointsPanelStateBefore.componentsCount);
+        assertEquals(4, breakPointsPanelStateAfter.componentsCount);
+        assertEquals("23:56", breakPointsPanelStateAfter.labels.get(0).getText());
+        assertEquals("23:57", breakPointsPanelStateAfter.labels.get(1).getText());
+        assertEquals("23:58", breakPointsPanelStateAfter.labels.get(2).getText());
+        assertEquals("23:59", breakPointsPanelStateAfter.labels.get(3).getText());
     }
 
     @Test @Order(11)
@@ -182,19 +163,18 @@ class DayFrameFrameTest {
     void testRemoveBreakPointFromList() {
         List<BreakPoint> breakPoints = BreakPointFactory.fromDescriptions(List.of("23:56", "23:58 - message 2", "23:59", "23:57 - message"));
 
-        int componentCountBefore = dayFrame.eastPanel.getComponentCount();
+        BreakPointsPanelStateDTO breakPointsPanelStateBefore = GUIStateDTOFactory.ofBreakPointsPanel(dayFrame.eastPanel);
         dayFrame.setBreakPointsList(breakPoints);
-        int componentCountMiddle = dayFrame.eastPanel.getComponentCount();
+        BreakPointsPanelStateDTO breakPointsPanelStateMiddle = GUIStateDTOFactory.ofBreakPointsPanel(dayFrame.eastPanel);
         dayFrame.removeBreakPointFromList(breakPoints.get(2));
-        int componentCountAfter = dayFrame.eastPanel.getComponentCount();
-        List<JLabel> breakComponents = Arrays.stream(dayFrame.eastPanel.getComponents()).map(c -> (JLabel) c).collect(Collectors.toList());
+        BreakPointsPanelStateDTO breakPointsPanelStateAfter = GUIStateDTOFactory.ofBreakPointsPanel(dayFrame.eastPanel);
 
-        assertEquals(0, componentCountBefore);
-        assertEquals(4, componentCountMiddle);
-        assertEquals(3, componentCountAfter);
-        assertEquals("23:56", breakComponents.get(0).getText());
-        assertEquals("23:57", breakComponents.get(1).getText());
-        assertEquals("23:59", breakComponents.get(2).getText());
+        assertEquals(0, breakPointsPanelStateBefore.componentsCount);
+        assertEquals(4, breakPointsPanelStateMiddle.componentsCount);
+        assertEquals(3, breakPointsPanelStateAfter.componentsCount);
+        assertEquals("23:56", breakPointsPanelStateAfter.labels.get(0).getText());
+        assertEquals("23:57", breakPointsPanelStateAfter.labels.get(1).getText());
+        assertEquals("23:59", breakPointsPanelStateAfter.labels.get(2).getText());
     }
 
     @Test @Order(12)

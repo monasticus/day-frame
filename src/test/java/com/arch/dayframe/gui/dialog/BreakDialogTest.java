@@ -3,14 +3,14 @@ package com.arch.dayframe.gui.dialog;
 import com.arch.dayframe.gui.utils.GBC;
 import com.arch.dayframe.model.bp.BreakPoint;
 import com.arch.dayframe.model.bp.BreakPointFactory;
+import com.arch.dayframe.testutils.state.BreakDialogStateDTO;
+import com.arch.dayframe.testutils.state.GUIStateDTOFactory;
 import org.junit.jupiter.api.*;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,87 +22,68 @@ class BreakDialogTest {
     private static final int DEFAULT_ANCHOR = GBC.CENTER;
     private static final int DEFAULT_FILL = GBC.NONE;
     private static BreakDialog breakDialog;
-    private static JPanel mainPanel;
-    private static JLabel timeLabel;
-    private static JLabel messageLabel;
-    private static JComboBox<Integer> postponeList;
-    private static JPanel buttonPanel;
-    private static JButton okButton;
-    private static JButton postponeButton;
+    private static BreakDialogStateDTO breakDialogState;
 
     @BeforeEach
     void setUp() {
         breakDialog = new BreakDialog(new Frame());
-        mainPanel = breakDialog.mainPanel;
-        timeLabel = breakDialog.timeLabel;
-        messageLabel = breakDialog.messageLabel;
-        postponeList = breakDialog.postponeList;
-        buttonPanel = breakDialog.buttonPanel;
-        okButton = breakDialog.okButton;
-        postponeButton = breakDialog.postponeButton;
+        breakDialogState = GUIStateDTOFactory.ofBreakDialog(breakDialog);
     }
 
     @Test @Order(1)
     @DisplayName("01. Break Dialog Title Test")
     void testDialogTitle() {
-        String title = breakDialog.getTitle();
-        assertEquals("Break", title);
+        assertEquals("Break", breakDialogState.title);
     }
 
     @Test @Order(2)
     @DisplayName("02. Break Dialog Modality Test")
     void testModality() {
-        assertFalse(breakDialog.isModal());
+        assertFalse(breakDialogState.modal);
     }
 
     @Test @Order(3)
     @DisplayName("03. Default Close Operation Test")
     void testDefaultCloseOperation() {
-        int defaultCloseOperation = breakDialog.getDefaultCloseOperation();
-        assertEquals(WindowConstants.DO_NOTHING_ON_CLOSE, defaultCloseOperation);
+        assertEquals(WindowConstants.DO_NOTHING_ON_CLOSE, breakDialogState.defaultCloseOperation);
     }
 
     @Test @Order(4)
     @DisplayName("04. Default Preferred Size Test")
     void testDefaultPreferredSize() {
-        Dimension preferredSize = breakDialog.getPreferredSize();
-        assertEquals(600, preferredSize.width);
-        assertEquals(375, preferredSize.height);
+        assertEquals(600, breakDialogState.preferredSizeWidth);
+        assertEquals(375, breakDialogState.preferredSizeHeight);
     }
 
     @Test @Order(5)
     @DisplayName("05. Default Location Test")
     void testDefaultLocation() {
         Point expectedLocation = getDefaultLocation();
-        Point actualLocation = breakDialog.getLocation();
-
-        assertEquals(expectedLocation, actualLocation);
+        assertEquals(expectedLocation, breakDialogState.location);
     }
 
     @Test @Order(6)
     @DisplayName("06. Resizable Test")
     void testResizable() {
-        assertFalse(breakDialog.isResizable());
+        assertFalse(breakDialogState.resizable);
     }
 
     @Test @Order(7)
     @DisplayName("07. Default Button Test")
     void testDefaultButton() {
-        JButton defaultButton = breakDialog.getRootPane().getDefaultButton();
-        assertSame(okButton, defaultButton);
+        assertSame(breakDialog.okButton, breakDialogState.defaultButton);
     }
 
     @Test @Order(8)
     @DisplayName("08. Default Background Test")
     void testDefaultBackground() {
-        Color mainPanelBgColor = mainPanel.getBackground();
-        assertEquals(Color.WHITE, mainPanelBgColor);
+        assertEquals(Color.WHITE, breakDialogState.background);
     }
 
     @Test @Order(9)
     @DisplayName("09. Default Layout Test")
     void testDefaultLayout() {
-        GridBagLayout layout = assertDoesNotThrow(() -> (GridBagLayout) mainPanel.getLayout());
+        GridBagLayout layout = (GridBagLayout) breakDialogState.layout;
         assertNull(layout.rowHeights);
         assertNull(layout.rowWeights);
         assertNull(layout.columnWidths);
@@ -112,11 +93,11 @@ class BreakDialogTest {
     @Test @Order(10)
     @DisplayName("10. Component's General Configuration Test")
     void testComponentsGeneralConfiguration() {
-        List<Component> labels = assertDoesNotThrow(() -> Arrays.stream(mainPanel.getComponents()).collect(Collectors.toList()));
-        long labelsCount = labels.stream().filter(c -> c instanceof JLabel).count();
-        long panelsCount = labels.stream().filter(c -> c instanceof JPanel).count();
-        long comboBoxCount = labels.stream().filter(c -> c instanceof JComboBox).count();
-        assertEquals(4, mainPanel.getComponentCount());
+        List<Component> components = breakDialogState.components;
+        long labelsCount = components.stream().filter(c -> c instanceof JLabel).count();
+        long panelsCount = components.stream().filter(c -> c instanceof JPanel).count();
+        long comboBoxCount = components.stream().filter(c -> c instanceof JComboBox).count();
+        assertEquals(4, breakDialogState.componentsCount);
         assertEquals(2L, labelsCount);
         assertEquals(1L, panelsCount);
         assertEquals(1L, comboBoxCount);
@@ -125,9 +106,9 @@ class BreakDialogTest {
     @Test @Order(11)
     @DisplayName("11. Time Label - Border Test")
     void testTimeLabelBorder() {
-        MatteBorder border = assertDoesNotThrow(() -> (MatteBorder) timeLabel.getBorder());
-        Insets borderInsets = border.getBorderInsets();
-        Color borderColor = border.getMatteColor();
+        MatteBorder timeLabelBorder = (MatteBorder) breakDialogState.timeLabelBorder;
+        Color borderColor = timeLabelBorder.getMatteColor();
+        Insets borderInsets = timeLabelBorder.getBorderInsets();
 
         assertEquals(Color.BLACK, borderColor);
         assertEquals(1, borderInsets.top);
@@ -139,18 +120,16 @@ class BreakDialogTest {
     @Test @Order(12)
     @DisplayName("12. Time Label - Font Test")
     void testTimeLabelFont() {
-        Font font = timeLabel.getFont();
-
-        assertEquals(Font.SANS_SERIF, font.getFamily());
-        assertEquals(Font.BOLD, font.getStyle());
-        assertEquals(40, font.getSize());
+        assertEquals(Font.SANS_SERIF, breakDialogState.timeLabelFontFamily);
+        assertEquals(Font.BOLD, breakDialogState.timeLabelFontStyle);
+        assertEquals(40, breakDialogState.timeLabelFontSize);
     }
 
     @Test @Order(13)
     @DisplayName("13. Time Label - GridBagConstraints Test")
     void testTimeLabelGridBagConstraints() {
-        GridBagLayout layout = (GridBagLayout) mainPanel.getLayout();
-        GridBagConstraints constraints = layout.getConstraints(timeLabel);
+        GridBagConstraints constraints = breakDialogState.timeLabelConstraints;
+
         int gridx = 0;
         int gridy = 1;
         int gridwidth = 1;
@@ -163,24 +142,22 @@ class BreakDialogTest {
     @Test @Order(14)
     @DisplayName("14. Message Label - Border Test")
     void testMessageLabelBorder() {
-        assertNull(messageLabel.getBorder());
+        assertNull(breakDialogState.messageLabelBorder);
     }
 
     @Test @Order(15)
     @DisplayName("15. Message Label - Font Test")
     void testMessageLabelFont() {
-        Font font = messageLabel.getFont();
-
-        assertEquals(Font.SANS_SERIF, font.getFamily());
-        assertEquals(Font.ITALIC + Font.BOLD, font.getStyle());
-        assertEquals(17, font.getSize());
+        assertEquals(Font.SANS_SERIF, breakDialogState.messageLabelFontFamily);
+        assertEquals(Font.ITALIC + Font.BOLD, breakDialogState.messageLabelFontStyle);
+        assertEquals(17, breakDialogState.messageLabelFontSize);
     }
 
     @Test @Order(16)
     @DisplayName("16. Message Label - GridBagConstraints Test")
     void testMessageLabelGridBagConstraints() {
-        GridBagLayout layout = (GridBagLayout) mainPanel.getLayout();
-        GridBagConstraints constraints = layout.getConstraints(messageLabel);
+        GridBagConstraints constraints = breakDialogState.messageLabelConstraints;
+
         int gridx = 0;
         int gridy = 3;
         int gridwidth = 1;
@@ -193,24 +170,22 @@ class BreakDialogTest {
     @Test @Order(17)
     @DisplayName("17. Postpone List - Border Test")
     void testPostponeListBorder() {
-        assertNull(postponeList.getBorder());
+        assertNull(breakDialogState.postponeListBorder);
     }
 
     @Test @Order(18)
     @DisplayName("18. Postpone List - Font Test")
     void testPostponeListFont() {
-        Font font = postponeList.getFont();
-
-        assertEquals(Font.SANS_SERIF, font.getFamily());
-        assertEquals(Font.BOLD, font.getStyle());
-        assertEquals(11, font.getSize());
+        assertEquals(Font.SANS_SERIF, breakDialogState.postponeListFontFamily);
+        assertEquals(Font.BOLD, breakDialogState.postponeListFontStyle);
+        assertEquals(11, breakDialogState.postponeListFontSize);
     }
 
     @Test @Order(19)
     @DisplayName("19. Postpone List - GridBagConstraints Test")
     void testPostponeListGridBagConstraints() {
-        GridBagLayout layout = (GridBagLayout) mainPanel.getLayout();
-        GridBagConstraints constraints = layout.getConstraints(postponeList);
+        GridBagConstraints constraints = breakDialogState.postponeListConstraints;
+
         int gridx = 0;
         int gridy = 4;
         int gridwidth = 1;
@@ -223,30 +198,24 @@ class BreakDialogTest {
     @Test @Order(20)
     @DisplayName("20. Postpone List - List Items Test")
     void testPostponeListValues() {
-        int itemCount = postponeList.getItemCount();
-        Integer item1 = postponeList.getItemAt(0);
-        Integer item2 = postponeList.getItemAt(1);
-        Integer item3 = postponeList.getItemAt(2);
-        Integer selectedItem = (Integer) postponeList.getSelectedItem();
-
-        assertEquals(3, itemCount);
-        assertEquals(5, item1);
-        assertEquals(10, item2);
-        assertEquals(15, item3);
-        assertEquals(5, selectedItem);
+        assertEquals(3, breakDialogState.postponeListItemCount);
+        assertEquals(5,  breakDialogState.postponeListItems.get(0));
+        assertEquals(10, breakDialogState.postponeListItems.get(1));
+        assertEquals(15, breakDialogState.postponeListItems.get(2));
+        assertEquals(5, breakDialogState.postponeListSelectedItem);
     }
 
     @Test @Order(21)
     @DisplayName("21. Button Panel - Border Test")
     void testButtonPanelBorder() {
-        assertNull(buttonPanel.getBorder());
+        assertNull(breakDialogState.buttonPanelBorder);
     }
 
     @Test @Order(22)
     @DisplayName("22. Button Panel - GridBagConstraints Test")
     void testButtonPanelGridBagConstraints() {
-        GridBagLayout layout = (GridBagLayout) mainPanel.getLayout();
-        GridBagConstraints constraints = layout.getConstraints(buttonPanel);
+        GridBagConstraints constraints = breakDialogState.buttonPanelConstraints;
+
         int gridx = 0;
         int gridy = 5;
         int gridwidth = 1;
@@ -259,23 +228,19 @@ class BreakDialogTest {
     @Test @Order(23)
     @DisplayName("23. OK Button Test")
     void testOkButton() {
-        Font font = okButton.getFont();
-
-        assertEquals("OK", okButton.getText());
-        assertEquals(Font.DIALOG, font.getFamily());
-        assertEquals(Font.BOLD, font.getStyle());
-        assertEquals(12, font.getSize());
+        assertEquals("OK", breakDialogState.okButtonText);
+        assertEquals(Font.DIALOG, breakDialogState.okButtonFontFamily);
+        assertEquals(Font.BOLD, breakDialogState.okButtonFontStyle);
+        assertEquals(12, breakDialogState.okButtonFontSize);
     }
 
     @Test @Order(24)
     @DisplayName("24. Postpone Button Test")
     void testPostponeButton() {
-        Font font = postponeButton.getFont();
-
-        assertEquals("Postpone", postponeButton.getText());
-        assertEquals(Font.DIALOG, font.getFamily());
-        assertEquals(Font.BOLD, font.getStyle());
-        assertEquals(12, font.getSize());
+        assertEquals("Postpone", breakDialogState.postponeButtonText);
+        assertEquals(Font.DIALOG, breakDialogState.postponeButtonFontFamily);
+        assertEquals(Font.BOLD, breakDialogState.postponeButtonFontStyle);
+        assertEquals(12, breakDialogState.postponeButtonFontSize);
     }
 
     @Test @Order(25)
@@ -317,12 +282,12 @@ class BreakDialogTest {
     @Test @Order(30)
     @DisplayName("30. resetLocation() - without location change")
     void resetLocationWithoutLocationChange() {
-        Point locationBefore = breakDialog.getLocation();
+        BreakDialogStateDTO breakDialogStateBefore = GUIStateDTOFactory.ofBreakDialog(breakDialog);
         breakDialog.resetLocation();
-        Point locationAfter = breakDialog.getLocation();
+        BreakDialogStateDTO breakDialogStateAfter = GUIStateDTOFactory.ofBreakDialog(breakDialog);
 
-        assertEquals(locationBefore, locationAfter);
-        assertEquals(getDefaultLocation(), locationAfter);
+        assertEquals(breakDialogStateBefore.location, breakDialogStateAfter.location);
+        assertEquals(getDefaultLocation(), breakDialogStateAfter.location);
     }
 
     @Test @Order(31)
@@ -332,40 +297,32 @@ class BreakDialogTest {
         Point customizedLocation = new Point(1, 1);
         breakDialog.setLocation(customizedLocation);
 
-        Point locationBefore = breakDialog.getLocation();
+        BreakDialogStateDTO breakDialogStateBefore = GUIStateDTOFactory.ofBreakDialog(breakDialog);
         breakDialog.resetLocation();
-        Point locationAfter = breakDialog.getLocation();
+        BreakDialogStateDTO breakDialogStateAfter = GUIStateDTOFactory.ofBreakDialog(breakDialog);
 
-        assertNotEquals(locationBefore, locationAfter);
-        assertEquals(customizedLocation, locationBefore);
-        assertEquals(defaultLocation, locationAfter);
+        assertNotEquals(breakDialogStateBefore.location, breakDialogStateAfter.location);
+        assertEquals(customizedLocation, breakDialogStateBefore.location);
+        assertEquals(defaultLocation, breakDialogStateAfter.location);
     }
 
     @Test @Order(32)
     @DisplayName("32. completeDialog() - with ordinary break point")
-    void completeDialogWithOrinaryBreakPoint() {
+    void completeDialogWithOrdinaryBreakPoint() {
         BreakPoint breakPoint = BreakPointFactory.fromDescription("23:59 - message");
 
-        String timeLabelTextBefore = timeLabel.getText();
-        String messageLabelTextBefore = messageLabel.getText();
-        boolean postponeListEnabledBefore = postponeList.isEnabled();
-        boolean postponeButtonEnabledBefore = postponeButton.isEnabled();
-
+        BreakDialogStateDTO breakDialogStateBefore = GUIStateDTOFactory.ofBreakDialog(breakDialog);
         breakDialog.completeDialog(breakPoint);
+        BreakDialogStateDTO breakDialogStateAfter = GUIStateDTOFactory.ofBreakDialog(breakDialog);
 
-        String timeLabelTextAfter = timeLabel.getText();
-        String messageLabelTextAfter = messageLabel.getText();
-        boolean postponeListEnabledAfter = postponeList.isEnabled();
-        boolean postponeButtonEnabledAfter = postponeButton.isEnabled();
-
-        assertEquals("", timeLabelTextBefore);
-        assertEquals("", messageLabelTextBefore);
-        assertTrue(postponeListEnabledBefore);
-        assertTrue(postponeButtonEnabledBefore);
-        assertEquals("23:59", timeLabelTextAfter);
-        assertEquals("message", messageLabelTextAfter);
-        assertTrue(postponeListEnabledAfter);
-        assertTrue(postponeButtonEnabledAfter);
+        assertEquals("", breakDialogStateBefore.timeLabelText);
+        assertEquals("", breakDialogStateBefore.messageLabelText);
+        assertEquals("23:59", breakDialogStateAfter.timeLabelText);
+        assertEquals("message", breakDialogStateAfter.messageLabelText);
+        assertTrue(breakDialogStateBefore.postponeListEnabled);
+        assertTrue(breakDialogStateBefore.postponeButtonEnabled);
+        assertTrue(breakDialogStateAfter.postponeListEnabled);
+        assertTrue(breakDialogStateAfter.postponeButtonEnabled);
     }
 
     @Test @Order(33)
@@ -374,26 +331,18 @@ class BreakDialogTest {
         BreakPoint breakPoint = BreakPointFactory.fromDescription("23:55 - message");
         breakPoint.postpone(3);
 
-        String timeLabelTextBefore = timeLabel.getText();
-        String messageLabelTextBefore = messageLabel.getText();
-        boolean postponeListEnabledBefore = postponeList.isEnabled();
-        boolean postponeButtonEnabledBefore = postponeButton.isEnabled();
-
+        BreakDialogStateDTO breakDialogStateBefore = GUIStateDTOFactory.ofBreakDialog(breakDialog);
         breakDialog.completeDialog(breakPoint);
+        BreakDialogStateDTO breakDialogStateAfter = GUIStateDTOFactory.ofBreakDialog(breakDialog);
 
-        String timeLabelTextAfter = timeLabel.getText();
-        String messageLabelTextAfter = messageLabel.getText();
-        boolean postponeListEnabledAfter = postponeList.isEnabled();
-        boolean postponeButtonEnabledAfter = postponeButton.isEnabled();
-
-        assertEquals("", timeLabelTextBefore);
-        assertEquals("", messageLabelTextBefore);
-        assertTrue(postponeListEnabledBefore);
-        assertTrue(postponeButtonEnabledBefore);
-        assertEquals("23:58", timeLabelTextAfter);
-        assertEquals("message", messageLabelTextAfter);
-        assertFalse(postponeListEnabledAfter);
-        assertFalse(postponeButtonEnabledAfter);
+        assertEquals("", breakDialogStateBefore.timeLabelText);
+        assertEquals("", breakDialogStateBefore.messageLabelText);
+        assertEquals("23:58", breakDialogStateAfter.timeLabelText);
+        assertEquals("message", breakDialogStateAfter.messageLabelText);
+        assertTrue(breakDialogStateBefore.postponeListEnabled);
+        assertTrue(breakDialogStateBefore.postponeButtonEnabled);
+        assertFalse(breakDialogStateAfter.postponeListEnabled);
+        assertFalse(breakDialogStateAfter.postponeButtonEnabled);
     }
 
     private Point getDefaultLocation() {

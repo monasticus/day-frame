@@ -1,6 +1,6 @@
 package com.arch.dayframe.controller.listeners;
 
-import com.arch.dayframe.TestUtils;
+import com.arch.dayframe.testutils.TestUtils;
 import com.arch.dayframe.gui.DayFrameFrame;
 import com.arch.dayframe.gui.dialog.BreakDialog;
 import com.arch.dayframe.gui.panel.BreakPointsPanel;
