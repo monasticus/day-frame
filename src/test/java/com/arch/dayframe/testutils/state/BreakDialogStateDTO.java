@@ -52,7 +52,7 @@ public class BreakDialogStateDTO extends GUIStateDTO {
     public GridBagConstraints messageLabelConstraints;
     public GridBagConstraints postponeListConstraints;
     public GridBagConstraints buttonPanelConstraints;
-    public List<Component> labels;
+    public List<Component> components;
     public List<Integer> postponeListItems;
 
     protected BreakDialogStateDTO(BreakDialog breakDialog) {
@@ -99,7 +99,7 @@ public class BreakDialogStateDTO extends GUIStateDTO {
         messageLabelConstraints = getGridBagConstraints(layout, breakDialog.messageLabel);
         postponeListConstraints = getGridBagConstraints(layout, breakDialog.postponeList);
         buttonPanelConstraints = getGridBagConstraints(layout, breakDialog.buttonPanel);
-        labels = getComponents(breakDialog.mainPanel);
+        components = getComponents(breakDialog.mainPanel);
         postponeListItems = getListItems(breakDialog.postponeList);
     }
 }

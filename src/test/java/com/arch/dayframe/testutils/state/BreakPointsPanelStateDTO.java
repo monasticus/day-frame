@@ -2,6 +2,7 @@ package com.arch.dayframe.testutils.state;
 
 import com.arch.dayframe.gui.panel.BreakPointsPanel;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
@@ -9,7 +10,7 @@ public class BreakPointsPanelStateDTO extends GUIStateDTO {
 
     public LayoutManager layout;
     public Color background;
-    public List<Component> labels;
+    public List<JLabel> labels;
     public int preferredSizeWidth;
     public int preferredSizeHeight;
     public int componentsCount;
@@ -24,7 +25,7 @@ public class BreakPointsPanelStateDTO extends GUIStateDTO {
     protected BreakPointsPanelStateDTO(BreakPointsPanel breakPointsPanel) {
         layout = getLayoutManager(breakPointsPanel);
         background = getBackground(breakPointsPanel);
-        labels = getComponents(breakPointsPanel);
+        labels = getLabels(breakPointsPanel);
         preferredSizeWidth = getPreferredSizeWidth(breakPointsPanel);
         preferredSizeHeight = getPreferredSizeHeight(breakPointsPanel);
         componentsCount = getComponentCount(breakPointsPanel);

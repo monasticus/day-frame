@@ -3,7 +3,6 @@ package com.arch.dayframe.testutils.state;
 import com.arch.dayframe.gui.panel.TimePanel;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.util.List;
@@ -12,7 +11,7 @@ public class TimePanelStateDTO extends GUIStateDTO {
 
     public LayoutManager layout;
     public Color background;
-    public List<Component> labels;
+    public List<JLabel> labels;
     public int preferredSizeWidth;
     public int preferredSizeHeight;
     public int componentsCount;
@@ -47,12 +46,12 @@ public class TimePanelStateDTO extends GUIStateDTO {
     protected TimePanelStateDTO(TimePanel timePanel) {
         layout = getLayoutManager(timePanel);
         background = getBackground(timePanel);
-        labels = getComponents(timePanel);
+        labels = getLabels(timePanel);
         preferredSizeWidth = getPreferredSizeWidth(timePanel);
         preferredSizeHeight = getPreferredSizeHeight(timePanel);
         componentsCount = getComponentCount(timePanel);
 
-        JLabel leftLabel = (JLabel) labels.get(0);
+        JLabel leftLabel = labels.get(0);
         leftLabelForeground = getForeground(leftLabel);
         leftLabelText = getText(leftLabel);
         leftLabelFontFamily = getFontFamily(leftLabel);
@@ -62,7 +61,7 @@ public class TimePanelStateDTO extends GUIStateDTO {
         leftLabelAlignmentY = getAlignmentY(leftLabel);
         leftLabelBorder = (MatteBorder) getBorder(leftLabel);
 
-        JLabel centerLabel = (JLabel) labels.get(1);
+        JLabel centerLabel = labels.get(1);
         centerLabelForeground = getForeground(centerLabel);
         centerLabelText = getText(centerLabel);
         centerLabelFontFamily = getFontFamily(centerLabel);
@@ -72,7 +71,7 @@ public class TimePanelStateDTO extends GUIStateDTO {
         centerLabelAlignmentY = getAlignmentY(centerLabel);
         centerLabelBorder = (MatteBorder) getBorder(centerLabel);
 
-        JLabel rightLabel = (JLabel) labels.get(2);
+        JLabel rightLabel = labels.get(2);
         rightLabelForeground = getForeground(rightLabel);
         rightLabelText = getText(rightLabel);
         rightLabelFontFamily = getFontFamily(rightLabel);

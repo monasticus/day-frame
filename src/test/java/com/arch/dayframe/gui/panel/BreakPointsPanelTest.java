@@ -8,7 +8,6 @@ import org.junit.jupiter.api.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -106,8 +105,11 @@ class BreakPointsPanelTest {
         BreakPointsPanelStateDTO breakPointsPanelState = GUIStateDTOFactory.ofBreakPointsPanel(defaultBreakPointsPanel);
 
         assertEquals(3, breakPointsPanelState.componentsCount);
+        assertEquals("23:50", breakPointsPanelState.labels.get(0).getText());
         assertEquals(Color.BLACK, breakPointsPanelState.labels.get(0).getForeground());
+        assertEquals("23:56", breakPointsPanelState.labels.get(1).getText());
         assertEquals(Color.RED, breakPointsPanelState.labels.get(1).getForeground());
+        assertEquals("23:59", breakPointsPanelState.labels.get(2).getText());
         assertEquals(Color.BLACK, breakPointsPanelState.labels.get(2).getForeground());
     }
 

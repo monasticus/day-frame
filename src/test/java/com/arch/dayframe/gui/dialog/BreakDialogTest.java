@@ -10,9 +10,7 @@ import org.junit.jupiter.api.*;
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -95,10 +93,10 @@ class BreakDialogTest {
     @Test @Order(10)
     @DisplayName("10. Component's General Configuration Test")
     void testComponentsGeneralConfiguration() {
-        List<Component> labels = breakDialogState.labels;
-        long labelsCount = labels.stream().filter(c -> c instanceof JLabel).count();
-        long panelsCount = labels.stream().filter(c -> c instanceof JPanel).count();
-        long comboBoxCount = labels.stream().filter(c -> c instanceof JComboBox).count();
+        List<Component> components = breakDialogState.components;
+        long labelsCount = components.stream().filter(c -> c instanceof JLabel).count();
+        long panelsCount = components.stream().filter(c -> c instanceof JPanel).count();
+        long comboBoxCount = components.stream().filter(c -> c instanceof JComboBox).count();
         assertEquals(4, breakDialogState.componentsCount);
         assertEquals(2L, labelsCount);
         assertEquals(1L, panelsCount);

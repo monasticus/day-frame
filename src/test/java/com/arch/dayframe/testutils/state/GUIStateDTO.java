@@ -74,6 +74,10 @@ public class GUIStateDTO {
         return component.getAlignmentY();
     }
 
+    protected List<JLabel> getLabels(Container container) {
+        return Arrays.stream(container.getComponents()).map(c -> (JLabel) c).collect(Collectors.toList());
+    }
+
     protected List<Component> getComponents(Container container) {
         return Arrays.stream(container.getComponents()).collect(Collectors.toList());
     }
