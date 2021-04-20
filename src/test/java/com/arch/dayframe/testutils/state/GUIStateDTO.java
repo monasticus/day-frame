@@ -26,6 +26,10 @@ public class GUIStateDTO {
         return component.getBackground();
     }
 
+    protected Color getForeground(Component component) {
+        return component.getForeground();
+    }
+
     protected Point getLocation(Component component) {
         return component.getLocation();
     }
@@ -60,6 +64,14 @@ public class GUIStateDTO {
 
     protected int getPreferredSizeHeight(Component component) {
         return component.getPreferredSize().height;
+    }
+
+    protected float getAlignmentX(Component component) {
+        return component.getAlignmentX();
+    }
+
+    protected float getAlignmentY(Component component) {
+        return component.getAlignmentY();
     }
 
     protected List<Component> getComponents(Container container) {
