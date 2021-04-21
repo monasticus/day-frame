@@ -98,6 +98,7 @@ public class BreakDialog extends JDialog {
         setDefaultLocation();
         setResizable(false);
         getRootPane().setDefaultButton(okButton);
+        pack();
     }
 
     private void setDefaultLocation() {
