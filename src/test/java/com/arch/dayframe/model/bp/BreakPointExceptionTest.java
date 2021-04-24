@@ -1,5 +1,6 @@
 package com.arch.dayframe.model.bp;
 
+import com.arch.dayframe.model.time.BPSimpleTime;
 import org.junit.jupiter.api.*;
 
 import java.security.InvalidParameterException;

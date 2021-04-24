@@ -1,9 +1,9 @@
 package com.arch.dayframe.testutils;
 
-import com.arch.dayframe.model.bp.BPSimpleTime;
+import com.arch.dayframe.model.time.BPSimpleTime;
 import com.arch.dayframe.model.bp.BreakPoint;
 import com.arch.dayframe.model.bp.BreakPointFactory;
-import com.arch.dayframe.model.bp.SimpleTime;
+import com.arch.dayframe.model.time.SimpleTime;
 
 import java.io.File;
 import java.io.FileWriter;

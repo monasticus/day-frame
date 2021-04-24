@@ -1,5 +1,8 @@
 package com.arch.dayframe.model.bp;
 
+import com.arch.dayframe.model.time.BPSimpleTime;
+import com.arch.dayframe.model.time.SimpleTime;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;

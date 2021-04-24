@@ -1,5 +1,8 @@
-package com.arch.dayframe.model.bp;
+package com.arch.dayframe.model.time;
 
+import com.arch.dayframe.model.bp.BreakPointException;
+import com.arch.dayframe.model.time.BPSimpleTime;
+import com.arch.dayframe.model.time.SimpleTime;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 

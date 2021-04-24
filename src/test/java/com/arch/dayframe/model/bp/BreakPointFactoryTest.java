@@ -1,5 +1,7 @@
 package com.arch.dayframe.model.bp;
 
+import com.arch.dayframe.model.time.BPSimpleTime;
+import com.arch.dayframe.model.time.SimpleTime;
 import org.junit.jupiter.api.*;
 
 import java.io.FileNotFoundException;

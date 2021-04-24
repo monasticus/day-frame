@@ -1,4 +1,4 @@
-package com.arch.dayframe.model.bp;
+package com.arch.dayframe.model.time;
 
 public interface SimpleTime extends Comparable<SimpleTime>, Cloneable {
 

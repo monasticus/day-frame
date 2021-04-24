@@ -1,5 +1,6 @@
-package com.arch.dayframe.model.bp;
+package com.arch.dayframe.model.time;
 
+import com.arch.dayframe.model.bp.BreakPointException;
 import com.arch.dayframe.model.bp.BreakPointException.ErrorCode;
 
 import java.util.Calendar;

@@ -1,5 +1,7 @@
 package com.arch.dayframe.model.bp;
 
+import com.arch.dayframe.model.time.SimpleTime;
+
 import java.security.InvalidParameterException;
 import java.util.Objects;
 import java.util.Optional;
