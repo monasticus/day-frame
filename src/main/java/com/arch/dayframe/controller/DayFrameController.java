@@ -26,6 +26,9 @@ public class DayFrameController {
         this.dayFrame = dayFrame;
         this.dialog = new BreakDialog(dayFrame);
         this.breakPoints = new BreakPoints(breakPointsPath);
+    }
+
+    public void start(){
         initializeValues();
         addListeners();
         setTimers();
