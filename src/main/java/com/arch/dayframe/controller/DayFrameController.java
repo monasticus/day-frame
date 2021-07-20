@@ -5,6 +5,8 @@ import com.arch.dayframe.gui.DayFrameFrame;
 import com.arch.dayframe.gui.dialog.BreakDialog;
 import com.arch.dayframe.model.bp.BreakPointException;
 import com.arch.dayframe.model.bp.BreakPoints;
+import com.arch.dayframe.model.ringer.CycleRinger;
+import com.arch.dayframe.model.ringer.Ringer;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -28,7 +30,7 @@ public class DayFrameController {
         this.breakPoints = new BreakPoints(breakPointsPath);
     }
 
-    public void start(){
+    public void start() {
         initializeValues();
         addListeners();
         setTimers();
@@ -60,7 +62,8 @@ public class DayFrameController {
     }
 
     private void setRingerTimer() {
-        Timer ringerTimer = new Timer(RINGER_TIMER_DELAY, new RingerListener(HOURS_SOUND_PATH, QUARTER_SOUND_PATH));
+        Ringer ringer = new CycleRinger(HOURS_SOUND_PATH, QUARTER_SOUND_PATH);
+        Timer ringerTimer = new Timer(RINGER_TIMER_DELAY, new RingerListener(ringer, RINGER_TIMER_DELAY));
         ringerTimer.start();
     }
 

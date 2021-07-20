@@ -1,75 +1,57 @@
 package com.arch.dayframe.controller.listeners;
 
-import com.arch.dayframe.controller.utils.DayFrameAudioSystem;
+import com.arch.dayframe.model.ringer.CycleRinger;
+import com.arch.dayframe.model.ringer.Ringer;
 
-import javax.sound.sampled.*;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 import java.util.Calendar;
 
 public class RingerListener implements ActionListener {
 
-    private static final int QUARTER_OF_AN_HOUR = 15;
+    private final Ringer ringer;
+    private final int initialDelay;
+    private final int standardDelay;
+    private final int exceptionalDelay;
 
-    private final File hourSoundFile;
-    private final File quarterSoundFile;
-    private int currentMinute;
-    private boolean rang;
-
-    public RingerListener(String hourSoundPath, String quarterSoundPath) {
-        this.hourSoundFile = new File(hourSoundPath);
-        this.quarterSoundFile = new File(quarterSoundPath);
-        this.rang = false;
+    public RingerListener(Ringer ringer, int initialDelay) {
+        int cycleInterval = getCycleInterval(ringer);
+        this.ringer = ringer;
+        this.initialDelay = initialDelay;
+        this.standardDelay = (cycleInterval * 60 * 1000) - 500;  // half of second before new interval
+        this.exceptionalDelay = (cycleInterval - 1) * 60 * 1000; // one minute before new interval
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        currentMinute = Calendar.getInstance().get(Calendar.MINUTE);
-        if (!rang) {
-            File soundFile = getSoundFile();
-            if (soundFile != null) {
-                ring(soundFile);
-                rang = true;
-            }
-        } else if (hasMinutePassed()) {
-            rang = false;
-        }
+        Timer timer = (Timer) e.getSource();
+        if (!ringer.rang() && ringer.tryRing())
+            pauseTimer(timer);
+        else if (timerHasBeenPaused(timer))
+            releaseTimer(timer);
     }
 
-    private File getSoundFile() {
-        return isFullHour() ? hourSoundFile : isQuarterOfAnHour() ? quarterSoundFile : null;
+    private int getCycleInterval(Ringer ringer) {
+        return ringer instanceof CycleRinger ? ((CycleRinger) ringer).getMinutesInterval() : 60;
     }
 
-    private boolean isFullHour() {
-        return currentMinute == 0;
+    private void pauseTimer(Timer timer) {
+        // Exceptional delay will be used when application has been launched
+        // in first minute of the interval but not in first second.
+        // Thanks the exceptional delay, next bell will ring in first second.
+        timer.setDelay(minuteJustStarted() ? standardDelay : exceptionalDelay);
     }
 
-    private boolean isQuarterOfAnHour() {
-        return currentMinute % QUARTER_OF_AN_HOUR == 0;
+    private void releaseTimer(Timer timer) {
+        timer.setDelay(initialDelay);
     }
 
-    private boolean hasMinutePassed() {
-        return currentMinute == 1 || currentMinute % QUARTER_OF_AN_HOUR == 1;
+    private boolean timerHasBeenPaused(Timer timer) {
+        return timer.getDelay() != initialDelay;
     }
 
-    private void ring(File soundFile) {
-        try (AudioInputStream ringInputStream = AudioSystem.getAudioInputStream(soundFile.getAbsoluteFile())) {
-            int ringCount = isFullHour() ? 1 : getMultiplesOfQuarters();
-            ringSoundInLoop(ringInputStream, ringCount);
-        } catch (IOException | UnsupportedAudioFileException | LineUnavailableException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private int getMultiplesOfQuarters() {
-        return currentMinute / QUARTER_OF_AN_HOUR;
-    }
-
-    private void ringSoundInLoop(AudioInputStream ringInputStream, int ringCount) throws LineUnavailableException, IOException {
-        Clip clip = DayFrameAudioSystem.getAutoClosingClip();
-        clip.open(ringInputStream);
-        clip.loop(ringCount -1);
+    private boolean minuteJustStarted() {
+        return Calendar.getInstance().get(Calendar.SECOND) == 0;
     }
 }
