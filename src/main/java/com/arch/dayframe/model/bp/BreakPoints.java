@@ -56,6 +56,15 @@ public class BreakPoints {
         }
     }
 
+    public void add(BreakPoint breakPoint){
+        if (breakPoint.isNotPast()){
+            breakPoints.add(breakPoint);
+            refresh();
+        } else {
+            throw new BreakPointException(BreakPointException.ErrorCode.DESCRIPTION_FORMAT_ERR, breakPoint.getTimeValue());
+        }
+    }
+
     private boolean doesNotHaveNextOrNextIsLast() {
         return !iterator.hasNext() || iterator.nextIndex() == getSize()-1;
     }

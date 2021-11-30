@@ -44,6 +44,7 @@ public class DayFrameController {
 
     private void addListeners() {
         dayFrame.addWindowListener(new DayFrameWindowListener(dayFrame));
+        dayFrame.southPanel.addButton.addActionListener(new BreakPointAdditionListener(breakPoints, dayFrame));
         dialog.addWindowFocusListener(new BreakDialogWindowListener(dialog));
         dialog.postponeButton.addActionListener(new PostponementListener(breakPoints, dayFrame, dialog));
         dialog.okButton.addActionListener(new BreakListener(dialog));

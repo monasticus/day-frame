@@ -1,6 +1,7 @@
 package com.arch.dayframe.gui;
 
 import com.arch.dayframe.gui.panel.BreakPointsPanel;
+import com.arch.dayframe.gui.panel.ManagementPanel;
 import com.arch.dayframe.gui.panel.TimePanel;
 import com.arch.dayframe.model.bp.BreakPoint;
 
@@ -14,11 +15,11 @@ public class DayFrameFrame extends JFrame {
     private static final int DEFAULT_WIDTH = 700;
     private static final int DEFAULT_HEIGHT = 450;
 
-    protected TimePanel northPanel;
-    protected BreakPointsPanel eastPanel;
-    protected JPanel southPanel;
-    protected JPanel westPanel;
-    protected JPanel centerPanel;
+    public TimePanel northPanel;
+    public BreakPointsPanel eastPanel;
+    public ManagementPanel southPanel;
+    public JPanel westPanel;
+    public JPanel centerPanel;
 
     public DayFrameFrame() throws HeadlessException {
         build();
@@ -85,7 +86,7 @@ public class DayFrameFrame extends JFrame {
     }
 
     private void buildSouthPanel() {
-        southPanel = new JPanel();
+        southPanel = new ManagementPanel();
         southPanel.setBackground(Color.WHITE);
         add(southPanel, BorderLayout.SOUTH);
     }

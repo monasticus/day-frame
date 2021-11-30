@@ -27,6 +27,8 @@ public class BreakPointException extends RuntimeException {
         switch (errorCode) {
             case DESCRIPTION_FORMAT_ERR:
                 return String.format("Wrong break point description: %s", errorSource);
+//            case PAST_TIME_ERR:
+//                return String.format("Wrong break point time: %s\n(time that has passed)", errorSource);
             case TIME_FORMAT_ERR:
                 return String.format("Wrong break point time: %s", errorSource);
             case TIME_DUPLICATE_ERR:

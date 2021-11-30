@@ -34,6 +34,7 @@ public class DayFrame {
                 showSplashDialogIfExists();
                 controller.start();
                 frame.setVisible(true);
+                frame.requestFocusInWindow();
             } catch (BreakPointException | IOException e) {
                 String message = isIOExceptionButNotFileNotFound(e) ? IO_EXCEPTION_MESSAGE : e.getMessage();
                 showErrorDialog(message);
